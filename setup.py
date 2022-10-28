@@ -14,8 +14,13 @@ def setup_package():
         ]),
         install_requires = [
             'numpy',
+            'pandas',
+            'pyarrow',
             'pydantic',
             'pyedflib'
+        ],
+        tests_require = [
+            'pytest'
         ],
         python_requires = '>=3.10'
     )

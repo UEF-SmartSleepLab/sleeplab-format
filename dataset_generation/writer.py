@@ -3,16 +3,91 @@
 The data needs to conform to the types specified in
 dataset_generation.data_types
 """
-from dataset_generation import data_types
+import json
+import logging
+import numpy as np
+
+from dataset_generation.models import *
+from pathlib import Path
 
 
-def write_subject(subject: data_types.Subject) -> None:
-    pass
+logger = logging.getLogger(__name__)
 
 
-def write_study(study: data_types.Study) -> None:
-    pass
+JSON_INDENT = 2
 
 
-def write_dataset(dataset: data_types.Dataset) -> None:
-    pass
+def write_subject_metadata(
+        subject: Subject,
+        subject_path: Path) -> None:
+    metadata_path = subject_path / 'metadata.json'
+    metadata_path.write_text(subject.metadata.json(indent=JSON_INDENT))
+
+
+def write_sample_arrays(
+        subject: Subject,
+        subject_path: Path) -> None:
+    for name, sarr in subject.sample_arrays.items():
+        # if sarr.attributes.sampling_rate is not None:
+        #     suffix = f'{sarr.attributes.sampling_rate}Hz'
+        # else:
+        #     suffix = f'{sarr.attributes.sampling_interval}s'
+        sarr_path = subject_path / f'{sarr.attributes.name}'
+        sarr_path.mkdir(exist_ok=True)
+        
+        # Write the attributes
+        attr_path = sarr_path / 'attributes.json'
+        attr_path.write_text(
+            sarr.attributes.json(indent=JSON_INDENT, exclude_unset=True))
+
+        # Write the array
+        arr_fname = f'{subject.metadata.subject_id}_{sarr.attributes.name}.npy'
+        np.save(sarr_path / arr_fname, sarr.values, allow_pickle=False)
+
+
+def write_annotations(
+        subject: Subject,
+        subject_path: Path) -> None:
+    for k, v in subject.annotations.items():
+        # Write as JSON
+        json_path = subject_path / f'{k}_annotated.json'
+        json_path.write_text(
+            json.dumps([a.dict() for a in v], indent=JSON_INDENT)
+        )
+
+
+def write_subject(
+        subject: Subject,
+        subject_path: Path) -> None:
+    subject_path.mkdir()
+    write_subject_metadata(subject, subject_path)
+    
+    write_sample_arrays(subject, subject_path)
+
+    write_annotations(subject, subject_path)
+
+
+def write_study(
+        study: Study,
+        study_path: Path) -> None:
+    for sid, subject in study.subjects.items():
+        subject_path = study_path / subject.metadata.subject_id
+        write_subject(subject, subject_path)
+
+
+def write_dataset(
+        dataset: Dataset,
+        basedir: str) -> None:
+    # Create the folder
+    dataset_path = Path(basedir) / dataset.name
+    logger.info(f'Creating dataset dir {dataset_path}...')
+    dataset_path.mkdir(parents=True, exist_ok=True)
+
+    # Write the studies
+    for name, study in dataset.studies.items():
+        assert name == study.name
+        logger.info(f'Writing data for study {study.name}...')
+        study_path = dataset_path / study.name
+        study_path.mkdir(exist_ok=True)
+
+        write_study(study, study_path)
