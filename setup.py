@@ -17,7 +17,8 @@ def setup_package():
             'pandas',
             'pyarrow',
             'pydantic',
-            'pyedflib'
+            'pyedflib',
+            'xmltodict'
         ],
         tests_require = [
             'pytest'

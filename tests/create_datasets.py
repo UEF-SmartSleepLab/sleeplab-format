@@ -6,7 +6,8 @@ from pathlib import Path
 
 def subject_metadata(sid):
     return {
-        'subject_id': sid
+        'subject_id': sid,
+        'recording_start_ts': '2018-01-01T23:10:04'
     }
 
 
@@ -47,18 +48,53 @@ def sample_arrays():
 
 def events():
     return [
-        {'name': 'spo2_desat', 'start': 123.45, 'duration': 15.0},
-        {'name': 'central_apnea', 'start': 321.45, 'duration': 11.2},
-        {'name': 'hypopnea', 'start': 400.0, 'duration': 32.0},
+        {
+            'name': 'spo2_desat',
+            'start_ts': '2015-01-29T21:29:17.123000',
+            'start_sec': 123.45,
+            'duration': 15.0,
+            'extra_attributes': {
+                'LowestSpO2': 93,
+                'Desaturation': 4
+            }
+        },
+        {
+            'name': 'central_apnea',
+            'start_ts': '2018-01-01T23:10:04.432000',
+            'start_sec': 321.45,
+            'duration': 11.2
+        },
+        {
+            'name': 'hypopnea',
+            'start_ts': '2015-01-29T21:29:17',
+            'start_sec': 400.0,
+            'duration': 32.0,
+        },
     ]
 
 
-def create_datasets():
+def study_logs():
+    return [
+        {
+            'ts': '2015-01-29T21:29:17',
+            'text': 'F3 - Impedance 1,4k'
+        },
+        {
+            'ts': '2015-01-29T21:29:17',
+            'text': 'LIGHTS OUT'
+        },
+        {
+            'ts': '2015-01-29T21:29:17',
+            'text': 'LIGHTS ON'
+        }
+    ]
+
+
+def create_datasets(basedir: Path) -> None:
     ds_name = 'dataset1'
     study_name = 'study1'
     subject_ids = ['10001', '10002', '10003']
     
-    basedir = Path(__file__).parent / 'datasets'
     ds_dir = basedir / ds_name
     study_dir = ds_dir / study_name
     study_dir.mkdir(exist_ok=True, parents=True)
@@ -86,6 +122,11 @@ def create_datasets():
         with open(events_path, 'w') as f:
             json.dump(events(), f, indent=2)
 
+        study_logs_path = subject_dir / 'study_logs.json'
+        with open(study_logs_path, 'w') as f:
+            json.dump(study_logs(), f, indent=2)
+
 
 if __name__ == '__main__':
-    create_datasets()
+    basedir = Path(__file__).parent / 'datasets'
+    create_datasets(basedir)

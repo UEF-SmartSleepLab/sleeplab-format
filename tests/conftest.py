@@ -1,10 +1,24 @@
 import numpy as np
 import pytest
+import shutil
 
 from dataset_generation.models import *
+from pathlib import Path
 
 # Use the same functions in fixtures that were used to create test files
-from .create_datasets import events, sample_arrays, subject_metadata
+from .create_datasets import create_datasets, events, sample_arrays, \
+    study_logs, subject_metadata
+
+
+@pytest.fixture(scope='session', autouse=True)
+def recreate_test_files() -> None:
+    """Recreate the separate test data files at the beginning of tests."""
+    # First remove the old files if existing
+    ds_dir = Path(__file__).parent / 'datasets'
+    shutil.rmtree(ds_dir, ignore_errors=True)
+
+    # Then recreate them
+    create_datasets(ds_dir)
 
 
 @pytest.fixture(scope='session')
@@ -28,8 +42,13 @@ def subjects(subject_ids):
 
         annotations = {'events': events()}
 
+        _study_logs = study_logs()
+
         subjs[sid] = Subject(
-            metadata=metadata, sample_arrays=arrays, annotations=annotations)
+            metadata=metadata,
+            sample_arrays=arrays,
+            annotations=annotations,
+            study_logs=_study_logs)
 
     return subjs
 

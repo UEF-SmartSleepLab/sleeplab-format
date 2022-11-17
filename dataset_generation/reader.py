@@ -43,8 +43,22 @@ def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
             annotation_name = p.name.removesuffix(ANNOTATION_SUFFIX)
             annotations[annotation_name] = [Annotation.parse_obj(event)
                 for event in json_annotations]
-            
+    
+    if len(annotations) == 0:
+        return None
     return annotations
+
+
+def read_study_logs(subject_dir: Path) -> list[LogEntry] | None:
+    p = subject_dir / 'study_logs.json'
+    if not p.exists():
+        return None
+    
+    with open(p, 'r') as f:
+        json_logs = json.load(f)
+    
+    logs = [LogEntry.parse_obj(entry) for entry in json_logs]
+    return logs
 
 
 def read_subject(subject_dir: Path) -> Subject:
@@ -54,10 +68,13 @@ def read_subject(subject_dir: Path) -> Subject:
 
     annotations = read_annotations(subject_dir)
 
+    study_logs = read_study_logs(subject_dir)
+
     return Subject(
         metadata=metadata,
         sample_arrays=sample_arrays,
-        annotations=annotations
+        annotations=annotations,
+        study_logs=study_logs
     )
 
 

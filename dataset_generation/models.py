@@ -3,13 +3,37 @@ import numpy as np
 import pyarrow as pa
 
 from collections.abc import Callable
+from datetime import datetime
 from functools import cached_property
 from pydantic import BaseModel, Extra, validator
+from pydantic.datetime_parse import parse_datetime
 from typing import Any, Iterable, Optional
+
+
+class NaiveDatetime(datetime):
+    """Custom field that removes timezone information when serializing.
+    
+    This is needed because Pydantic automatically adds UTC as timezone
+    when serializing if naive datetime object is passed.
+
+    See https://stackoverflow.com/a/70726989
+    """
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v):
+        v = parse_datetime(v)
+        v = v.replace(tzinfo=None)
+        return v
 
 
 class SubjectMetadata(BaseModel, extra=Extra.forbid):
     subject_id: str
+
+    # Recording start time
+    recording_start_ts: NaiveDatetime
     
 
 class ArrayAttributes(BaseModel, extra=Extra.forbid,
@@ -58,15 +82,39 @@ class SampleArray(
 
 
 class Annotation(BaseModel, extra=Extra.forbid):
+    # Freely defined name of the event
     name: str
-    start: float
+
+    # Start time as timestamp
+    start_ts: NaiveDatetime
+
+    # Start time as seconds from the start of recording
+    start_sec: float
+
+    # Duration of the event in seconds
+    # 0.0 if the event is a point in time
     duration: float
+
+    # Name of the channel used to annotate the event
+    input_channel: Optional[str] = None
+
+    # Freely defined extra attributes, such as desaturation depth
+    extra_attributes: Optional[dict[str, Any]] = None
+
+
+class LogEntry(BaseModel, extra=Extra.forbid):
+    # The log time as timestamp
+    ts: NaiveDatetime
+
+    # The log row as plain text
+    text: str
 
 
 class Subject(BaseModel, extra=Extra.forbid):
     metadata: SubjectMetadata
     sample_arrays: Optional[dict[str, SampleArray]] = None
     annotations: Optional[dict[str, list[Annotation]]] = None
+    study_logs: Optional[list[LogEntry]] = None
 
 
 class Study(BaseModel, extra=Extra.forbid):
