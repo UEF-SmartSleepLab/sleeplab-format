@@ -36,21 +36,19 @@ def read_edf_export(edf_path: Path,
     Instead of the actual signal, return a function which reads the signal
     when evaluated. This way, all data need not fit into memory.
     """
-    ch_name_idx_map = {}
-    
     edf_path_str = str(edf_path.resolve())
     with pyedflib.EdfReader(edf_path_str) as hdl:
         n_chs = hdl.signals_in_file
     
-        # Create a mapping from channel name to channel index
-        for i in range(n_chs):
-            ch_name_idx_map[hdl.getLabel(i).strip()] = i
-
         # Resolve the channel indices if channel names are given
         if ch_names is None:
             # Defaults to all channels
             ch_idx = range(n_chs)
         else:
+            # Create a mapping from channel name to channel index
+            ch_name_idx_map = {}
+            for i in range(n_chs):
+                ch_name_idx_map[hdl.getLabel(i).strip()] = i
             ch_idx = [ch_name_idx_map[ch_name] for ch_name in ch_names]
             
         header = hdl.getHeader()
@@ -60,7 +58,6 @@ def read_edf_export(edf_path: Path,
             s_header = hdl.getSignalHeader(i)
             fs = hdl.samples_in_datarecord(i) / hdl.datarecord_duration
             # Patch the wrongly calculated fs
-            s_header['sample_rate'] = fs
             s_header['sample_frequency'] = fs
             signal_headers.append(s_header)
             

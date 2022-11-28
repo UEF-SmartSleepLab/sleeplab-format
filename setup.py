@@ -10,7 +10,10 @@ def setup_package():
         description = 'Tools for transforming heterogeneous source data to a unified format',
         license = 'MIT',
         packages = find_packages(include=[
-            'dataset_generation', 'dataset_generation.*'
+            'dataset_generation',
+            'dataset_generation.*',
+            'profusion',
+            'profusion.*'
         ]),
         install_requires = [
             'numpy',
@@ -23,7 +26,10 @@ def setup_package():
         tests_require = [
             'pytest'
         ],
-        python_requires = '>=3.10'
+        python_requires = '>=3.10',
+        entry_points = {
+            'console_scripts': ['profusion_convert=profusion.convert:cli_convert_dataset']
+        },
     )
 
 

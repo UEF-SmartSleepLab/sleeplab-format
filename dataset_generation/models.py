@@ -4,10 +4,14 @@ import pyarrow as pa
 
 from collections.abc import Callable
 from datetime import datetime
+from enum import Enum
 from functools import cached_property
 from pydantic import BaseModel, Extra, validator
 from pydantic.datetime_parse import parse_datetime
-from typing import Any, Iterable, Optional
+from typing import Any, Optional
+
+
+SLEEPLAB_FORMAT_VERSION = '0.1'
 
 
 class NaiveDatetime(datetime):
@@ -29,11 +33,32 @@ class NaiveDatetime(datetime):
         return v
 
 
+class Sex(str, Enum):
+    FEMALE = 'FEMALE'
+    MALE = 'MALE'
+
+
+class SleepStage(str, Enum):
+    WAKE = 'WAKE'
+    N1 = 'N1'
+    N2 = 'N2'
+    N3 = 'N3'
+    REM = 'REM'
+    UNSURE = 'UNSURE'
+    UNKNOWN = 'UNKNOWN'
+
+
 class SubjectMetadata(BaseModel, extra=Extra.forbid):
     subject_id: str
 
     # Recording start time
     recording_start_ts: NaiveDatetime
+
+    age: Optional[float] = None
+    bmi: Optional[float] = None
+    sex: Optional[Sex] = None
+
+    additional_info: Optional[dict[str, Any]] = None
     
 
 class ArrayAttributes(BaseModel, extra=Extra.forbid,
@@ -41,6 +66,7 @@ class ArrayAttributes(BaseModel, extra=Extra.forbid,
         # https://pydantic-docs.helpmanual.io/usage/model_config/#smart-union
         smart_union=True):
     name: str
+    start_ts: NaiveDatetime
     sampling_rate: Optional[float | int] = None
     sampling_interval: Optional[float | int] = None
     unit: Optional[str] = None
@@ -95,11 +121,26 @@ class Annotation(BaseModel, extra=Extra.forbid):
     # 0.0 if the event is a point in time
     duration: float
 
-    # Name of the channel used to annotate the event
+    # Name of the channel used to annotate the eventb
     input_channel: Optional[str] = None
 
     # Freely defined extra attributes, such as desaturation depth
     extra_attributes: Optional[dict[str, Any]] = None
+
+
+class Annotations(BaseModel):
+    annotations: list[Annotation]
+    scorer: Optional[str] = None
+
+
+class SleepStageAnnotation(Annotation):
+    """Override `name` to allow only `SleepStage` enum members."""
+    name: SleepStage
+
+
+class Hypnogram(Annotations):
+    """A hypnogram is Annotations consisting of sleep stages."""
+    annotations: list[SleepStageAnnotation]
 
 
 class LogEntry(BaseModel, extra=Extra.forbid):
@@ -110,21 +151,28 @@ class LogEntry(BaseModel, extra=Extra.forbid):
     text: str
 
 
+class Logs(BaseModel):
+    logs: list[LogEntry]
+
+
 class Subject(BaseModel, extra=Extra.forbid):
     metadata: SubjectMetadata
     sample_arrays: Optional[dict[str, SampleArray]] = None
-    annotations: Optional[dict[str, list[Annotation]]] = None
-    study_logs: Optional[list[LogEntry]] = None
+    annotations: Optional[dict[str, Annotations]] = None
+    study_logs: Optional[Logs] = None
 
 
-class Study(BaseModel, extra=Extra.forbid):
+class Series(BaseModel, extra=Extra.forbid):
     name: str
     subjects: dict[str, Subject]
 
 
 class Dataset(BaseModel, extra=Extra.forbid):
     name: str
-    studies: dict[str, Study]
+    series: dict[str, Series]
+
+    # The sleeplab format version
+    version: str = SLEEPLAB_FORMAT_VERSION
 
 
 def lazy_memmap_array(fpath):

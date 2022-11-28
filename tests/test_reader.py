@@ -16,14 +16,14 @@ def _assert_datasets_equal(ds1, ds2):
     SampleArray.values_func objects can be different.
     """
     assert ds1.name == ds2.name
-    assert ds1.studies.keys() == ds2.studies.keys()
-    for (k, study1) in ds1.studies.items():
-        study2 = ds2.studies[k]
-        assert study1.name == study2.name
-        assert study1.subjects.keys() == study2.subjects.keys()
+    assert ds1.series.keys() == ds2.series.keys()
+    for (k, series1) in ds1.series.items():
+        series2 = ds2.series[k]
+        assert series1.name == series2.name
+        assert series1.subjects.keys() == series2.subjects.keys()
 
-        for (sk, subj1) in study1.subjects.items():
-            subj2 = study2.subjects[sk]
+        for (sk, subj1) in series1.subjects.items():
+            subj2 = series2.subjects[sk]
             assert subj1.metadata == subj2.metadata
             assert subj1.annotations == subj2.annotations
             assert subj1.sample_arrays.keys() == subj2.sample_arrays.keys()

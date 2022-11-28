@@ -25,7 +25,7 @@ def str_to_time(time_str):
     return time(hour=hour, minute=minute, second=second, microsecond=microsecond)
 
 
-def resolve_datetime(start_ts, _time):
+def resolve_datetime(start_ts: datetime, _time: datetime) -> datetime:
     """Convert time of the day to datetime based on start_ts datetime.
     
     This function assumes that time_str presents a time of the day within
@@ -47,7 +47,7 @@ def resolve_datetime(start_ts, _time):
     )
     
     
-def resolve_log_start_ts(start_ts, _time):
+def resolve_log_start_ts(start_ts: datetime, _time: datetime) -> datetime:
     """
     Start_ts represents the start of recording, and there may be
     logging before that, so create a log_start_ts to be used in
@@ -57,7 +57,9 @@ def resolve_log_start_ts(start_ts, _time):
     # those logs actually happened during the previous date
     if start_ts.hour < 12 and _time.hour > 12:
         _date = start_ts.date() - timedelta(days=1)
-
+    # Need to add 1 day if other way around
+    elif start_ts.hour > 12 and _time.hour < 12:
+        _date = start_ts.date() + timedelta(days=1)
     # If both are before midnight or after midnight, they belong to same date.
     else:
         _date = start_ts.date()
@@ -97,7 +99,7 @@ def parse_study_logs(log_file_path: Path, start_ts: datetime) -> list[LogEntry]:
     for line in lines:
         res.append(_parse_line(line.strip()))
 
-    return res
+    return Logs(logs=res)
 
 
 def parse_annotation(d: dict[str, Any], start_ts: datetime) -> Annotation:
@@ -125,18 +127,33 @@ def parse_annotation(d: dict[str, Any], start_ts: datetime) -> Annotation:
 
 def parse_xml(
         xml_path: Path,
-        start_ts: datetime) -> tuple[dict[str, list[Annotation]], list[int], int]:
+        start_ts: datetime,
+        # TODO: more precise definition of the scorer?
+        scorer: str = 'profusion_export'
+        ) -> tuple[dict[str, list[Annotation]], list[int], int]:
     """Read the events and hypnogram from the xml event file."""
     with open(xml_path, 'rb') as f:
         xml_parsed = xmltodict.parse(f)
 
-    xml_events = xml_parsed['CMPStudyConfig']['ScoredEvents']['ScoredEvent']
-    annotations = {'events': []}
-    for e in xml_events:
-        annotations['events'].append(parse_annotation(e, start_ts))
+    event_section = xml_parsed['CMPStudyConfig']['ScoredEvents']
     
-    hypnogram = xml_parsed['CMPStudyConfig']['SleepStages']['SleepStage']
-    hypnogram = [int(stage) for stage in hypnogram]
+    if event_section is not None:
+        xml_events = event_section['ScoredEvent']
+        events = []
+    
+        for e in xml_events:
+            events.append(parse_annotation(e, start_ts))
+
+        annotations = {'events': Annotations(scorer=scorer, annotations=events)}
+    else:
+        annotations = None
+
+    hg_section = xml_parsed['CMPStudyConfig']['SleepStages'] 
+    if hg_section is not None:
+        hypnogram = hg_section['SleepStage']
+        hypnogram = [int(stage) for stage in hypnogram]
+    else:
+        hypnogram = None
 
     epoch_sec = int(xml_parsed['CMPStudyConfig']['EpochLength'])
 
@@ -151,7 +168,8 @@ def parse_edf(edf_path: Path) -> tuple[datetime, dict[str, SampleArray]]:
         array_attributes = ArrayAttributes(
             # Replace '/' with '_' to avoid errors in filepaths
             name=_header['label'].replace('/', '_'),
-            sampling_rate=_header['sample_rate'],
+            start_ts=start_ts,
+            sampling_rate=_header['sample_frequency'],
             unit=_header['dimension']
         )
         return SampleArray(attributes=array_attributes, values_func=_load_func)
@@ -186,35 +204,79 @@ def parse_subject_id(idinfo_path: Path) -> str:
     return str(subject_id)
 
 
-def parse_hypnogram(hg_str_path: Path, hg_int: list[int], epoch_sec=30) -> SampleArray:
-    with open(hg_str_path) as f:
-        hg_str = f.readlines()
-    hg_str = [l.strip() for l in hg_str]
-    _msg = 'Hypnograms from xml and txt files have different lengths'
-    assert len(hg_int) == len(hg_str), _msg
-    hg_map = {int_stage: str_stage for int_stage, str_stage in zip(hg_int, hg_str)}
+def parse_sleep_stage(
+        stage_str: str,
+        start_ts: datetime,
+        epoch: int,
+        epoch_sec: float) -> SleepStageAnnotation:
+    stage_map = {
+        'W': SleepStage.WAKE,
+        'N1': SleepStage.N1,
+        'N2': SleepStage.N2,
+        'N3': SleepStage.N3,
+        'R': SleepStage.REM
+    }
     
-    return SampleArray(
-        attributes=ArrayAttributes(
-            name='hypnogram',
-            sampling_interval=epoch_sec,
-            value_map=hg_map
-        ),
-        values_func=lambda: hg_int
+    return SleepStageAnnotation(
+        name=stage_map(stage_str),
+        start_ts=start_ts + timedelta(seconds=epoch*epoch_sec),
+        start_sec=epoch*epoch_sec,
+        duration=epoch_sec
     )
 
 
+def parse_hypnogram(
+        subject_dir: Path,
+        start_ts: datetime,
+        hg_file: str,
+        hg_int: list[int],
+        epoch_sec=30,
+        scorer='profusion_export') -> Hypnogram:
+    try:
+        with open(subject_dir / hg_file) as f:
+            hg_str = f.readlines()
+    except FileNotFoundError:
+        logger.warn(f'Hypnogram not found from {subject_dir / hg_file}, return None')
+        return None
+    
+    hg_str = [l.strip() for l in hg_str]
+    _msg = 'Hypnograms from xml and txt files have different lengths'
+    assert len(hg_int) == len(hg_str), _msg
+    
+    # This is not needed anymore since writing hypnograms as annotations
+    # hg_map = {int_stage: str_stage for int_stage, str_stage in zip(hg_int, hg_str)}
+
+    sleep_stages = []
+    for epoch, stage_str in enumerate(hg_str):
+        sleep_stages.append(
+            parse_sleep_stage(stage_str, start_ts, epoch, epoch_sec)
+        )
+
+    return Hypnogram(scorer=scorer, annotations=sleep_stages)
+
+
 def parse_subject(subject_dir: Path, file_names: dict[str, str]) -> Subject:
-    subject_id = parse_subject_id(subject_dir / file_names['idinfo_file'])
+    if file_names['idinfo_file'] == '':
+        subject_id = subject_dir.name
+    else:
+        subject_id = parse_subject_id(subject_dir / file_names['idinfo_file'])
     start_ts, sample_arrays = parse_edf(subject_dir / file_names['edf_file'])
     annotations, hg_int, epoch_sec = parse_xml(subject_dir / file_names['xml_file'],
         start_ts=start_ts)
     
-    sample_arrays['hypnogram'] = parse_hypnogram(
-        subject_dir / file_names['hg_file'],
-        hg_int,
-        epoch_sec=epoch_sec
-    )
+    if hg_int is not None:
+        hypnogram = parse_hypnogram(
+            subject_dir,
+            start_ts,
+            file_names['hg_file'],
+            hg_int,
+            epoch_sec=epoch_sec
+        )
+        if annotations is None:
+            annotations = {}
+        
+        if hypnogram is not None:
+            annotations['hypnogram'] = hypnogram
 
     study_logs = parse_study_logs(subject_dir / file_names['log_file'], start_ts)
 
@@ -234,7 +296,7 @@ def parse_subject(subject_dir: Path, file_names: dict[str, str]) -> Subject:
 def read_data(
         src_dir: Path,
         ds_name: str,
-        study_name: str,
+        series_name: str,
         file_names: dict[str, str]) -> Dataset:
     """Read data from `basedir` and parse to sleeplab Dataset."""
     subjects = {}
@@ -242,8 +304,8 @@ def read_data(
         subject = parse_subject(subject_dir, file_names=file_names)
         subjects[subject.metadata.subject_id] = subject
 
-    studies = {study_name: Study(name=study_name, subjects=subjects)}
-    dataset = Dataset(name=ds_name, studies=studies)
+    series = {series_name: Series(name=series_name, subjects=subjects)}
+    dataset = Dataset(name=ds_name, series=series)
     
     return dataset
 
@@ -252,7 +314,7 @@ def convert_dataset(
         src_dir: Path,
         dst_dir: Path,
         ds_name: str,
-        study_name: str,
+        series_name: str,
         xml_file: str = 'edf_signals.edf.XML',
         log_file: str = 'txt_studylog.txt',
         edf_file: str = 'edf_signals.edf',
@@ -261,7 +323,7 @@ def convert_dataset(
     logger.info(f'Converting Profusion data from {src_dir} to {dst_dir}...')
     logger.info(f'Start reading the data from {src_dir}...')
     dataset = read_data(
-        src_dir, ds_name, study_name,
+        src_dir, ds_name, series_name,
         file_names={
             'xml_file': xml_file,
             'log_file': log_file,
@@ -280,7 +342,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument('--src_dir', type=Path, required=True)
     parser.add_argument('--dst_dir', type=Path, required=True)
     parser.add_argument('--ds_name', type=str, required=True)
-    parser.add_argument('--study_name', type=str, required=True)
+    parser.add_argument('--series_name', type=str, required=True)
     parser.add_argument('--xml_file', type=str, default='edf_signals.edf.XML')
     parser.add_argument('--log_file', type=str, default='txt_studylog.txt')
     parser.add_argument('--edf_file', type=str, default='edf_signals.edf')

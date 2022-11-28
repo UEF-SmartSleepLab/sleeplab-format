@@ -7,7 +7,10 @@ from pathlib import Path
 def subject_metadata(sid):
     return {
         'subject_id': sid,
-        'recording_start_ts': '2018-01-01T23:10:04'
+        'recording_start_ts': '2018-01-01T23:10:04',
+        'age': 24.0,
+        'bmi': 25.56,
+        'sex': 'MALE'
     }
 
 
@@ -16,6 +19,7 @@ def sample_arrays():
         's1_1024Hz': {
             'attributes': {
                 'name': 's1_1024Hz',
+                'start_ts': '2018-01-01T23:10:04',
                 'sampling_rate': 1024,
                 'unit': 'V'
             },
@@ -24,30 +28,33 @@ def sample_arrays():
         's2_32.1Hz': {
             'attributes': {
                 'name': 's2_32.1Hz',
+                'start_ts': '2018-01-01T23:10:04',
                 'sampling_rate': 32.1,
                 'unit': 'mV'
             },
             'values': 1.23 * np.ones(100),
         },
-        'hypnogram_30s': {
-            'attributes': {
-                'name': 'hypnogram_30s',
-                'sampling_interval': 30,
-                'value_map': {
-                    0: 'wake',
-                    1: 'n1',
-                    2: 'n2',
-                    3: 'n3',
-                    4: 'rem'
-                }
-            },
-            'values': np.array([0, 0, 1, 2, 2, 3, 2, 0, 0]),
-        }
+        # 'hypnogram_30s': {
+        #     'attributes': {
+        #         'name': 'hypnogram_30s',
+        #         'start_ts': '2018-01-01T23:10:04',
+        #         'sampling_interval': 30,
+        #         'value_map': {
+        #             0: 'wake',
+        #             1: 'n1',
+        #             2: 'n2',
+        #             3: 'n3',
+        #             4: 'rem'
+        #         }
+        #     },
+        #     'values': np.array([0, 0, 1, 2, 2, 3, 2, 0, 0]),
+        # }
     }
 
 
 def events():
-    return [
+    return {
+        'annotations': [
         {
             'name': 'spo2_desat',
             'start_ts': '2015-01-29T21:29:17.123000',
@@ -69,12 +76,40 @@ def events():
             'start_ts': '2015-01-29T21:29:17',
             'start_sec': 400.0,
             'duration': 32.0,
+        }],
+        'scorer': 'automatic',
+    }
+
+
+def hypnogram():
+    return {
+        'annotations': [
+        {
+            'name': 'N1',
+            'start_ts': '2015-01-29T21:29:17.123000',
+            'start_sec': 0.0,
+            'duration': 30.0,
         },
-    ]
+        {
+            'name': 'WAKE',
+            'start_ts': '2018-01-01T23:10:04.432000',
+            'start_sec': 120.0,
+            'duration': 30.0
+        },
+        {
+            'name': 'REM',
+            'start_ts': '2015-01-29T21:29:17',
+            'start_sec': 300.0,
+            'duration': 30.0,
+        }],
+        'scorer': 'scorer scorer',
+    }
+
 
 
 def study_logs():
-    return [
+    return {
+        'logs': [
         {
             'ts': '2015-01-29T21:29:17',
             'text': 'F3 - Impedance 1,4k'
@@ -87,20 +122,20 @@ def study_logs():
             'ts': '2015-01-29T21:29:17',
             'text': 'LIGHTS ON'
         }
-    ]
+    ]}
 
 
 def create_datasets(basedir: Path) -> None:
     ds_name = 'dataset1'
-    study_name = 'study1'
+    series_name = 'series1'
     subject_ids = ['10001', '10002', '10003']
     
     ds_dir = basedir / ds_name
-    study_dir = ds_dir / study_name
-    study_dir.mkdir(exist_ok=True, parents=True)
+    series_dir = ds_dir / series_name
+    series_dir.mkdir(exist_ok=True, parents=True)
 
     for sid in subject_ids:
-        subject_dir = study_dir / sid
+        subject_dir = series_dir / sid
         subject_dir.mkdir(exist_ok=True)
 
         subject_metadata_path = subject_dir / 'metadata.json'
@@ -121,6 +156,10 @@ def create_datasets(basedir: Path) -> None:
         events_path = subject_dir / 'events_annotated.json'
         with open(events_path, 'w') as f:
             json.dump(events(), f, indent=2)
+
+        hg_path = subject_dir / 'hypnogram_annotated.json'
+        with open(hg_path, 'w') as f:
+            json.dump(hypnogram(), f, indent=2)
 
         study_logs_path = subject_dir / 'study_logs.json'
         with open(study_logs_path, 'w') as f:

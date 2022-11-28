@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 import shutil
 
@@ -6,7 +5,7 @@ from dataset_generation.models import *
 from pathlib import Path
 
 # Use the same functions in fixtures that were used to create test files
-from .create_datasets import create_datasets, events, sample_arrays, \
+from .create_datasets import create_datasets, events, hypnogram, sample_arrays, \
     study_logs, subject_metadata
 
 
@@ -40,7 +39,10 @@ def subjects(subject_ids):
             for k, v in dict_arrays.items()
         }
 
-        annotations = {'events': events()}
+        annotations = {
+            'events': events(),
+            'hypnogram': hypnogram()   
+        }
 
         _study_logs = study_logs()
 
@@ -54,18 +56,18 @@ def subjects(subject_ids):
 
 
 @pytest.fixture
-def studies(subjects):
-    study = Study(
-        name='study1',
+def series(subjects):
+    series = Series(
+        name='series1',
         subjects=subjects
     )
-    return {'study1': study}
+    return {'series1': series}
 
 
 @pytest.fixture
-def dataset(studies):
+def dataset(series):
     dataset = Dataset(
         name='dataset1',
-        studies=studies
+        series=series
     )
     return dataset
