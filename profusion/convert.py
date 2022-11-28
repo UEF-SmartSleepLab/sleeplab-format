@@ -84,7 +84,11 @@ def parse_study_logs(log_file_path: Path, start_ts: datetime) -> list[LogEntry]:
     TODO: Add validation for the 24h assumption.
     """
     def _parse_line(l):
-        time_str, _, _, text = l.split(sep=',', maxsplit=3)
+        try:
+            time_str, _, _, text = l.split(sep=',', maxsplit=3)
+        except ValueError:
+            logger.warn(f'Could not parse line\n\t{l}\n\tfrom log file {log_file_path}')
+            return None
         _time = str_to_time(time_str)
         ts = resolve_datetime(log_start_ts, _time)
         return LogEntry(ts=ts, text=text)
@@ -97,7 +101,9 @@ def parse_study_logs(log_file_path: Path, start_ts: datetime) -> list[LogEntry]:
     log_start_ts = resolve_log_start_ts(start_ts, str_to_time(first_log_time_str))
 
     for line in lines:
-        res.append(_parse_line(line.strip()))
+        l_parsed = _parse_line(line.strip())
+        if l_parsed is not None:
+            res.append(l_parsed)
 
     return Logs(logs=res)
 
@@ -218,7 +224,7 @@ def parse_sleep_stage(
     }
     
     return SleepStageAnnotation(
-        name=stage_map(stage_str),
+        name=stage_map[stage_str],
         start_ts=start_ts + timedelta(seconds=epoch*epoch_sec),
         start_sec=epoch*epoch_sec,
         duration=epoch_sec
