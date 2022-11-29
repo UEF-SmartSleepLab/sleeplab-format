@@ -237,7 +237,7 @@ def parse_hypnogram(
         hg_file: str,
         hg_int: list[int],
         epoch_sec=30,
-        scorer='profusion_export') -> Hypnogram:
+        scorer='profusion_manual') -> Hypnogram:
     try:
         with open(subject_dir / hg_file) as f:
             hg_str = f.readlines()

@@ -36,6 +36,7 @@ class NaiveDatetime(datetime):
 class Sex(str, Enum):
     FEMALE = 'FEMALE'
     MALE = 'MALE'
+    OTHER = 'OTHER'
 
 
 class SleepStage(str, Enum):
@@ -45,7 +46,7 @@ class SleepStage(str, Enum):
     N3 = 'N3'
     REM = 'REM'
     UNSURE = 'UNSURE'
-    UNKNOWN = 'UNKNOWN'
+    UNSCORED = 'UNSCORED'
 
 
 class SubjectMetadata(BaseModel, extra=Extra.forbid):
@@ -53,6 +54,12 @@ class SubjectMetadata(BaseModel, extra=Extra.forbid):
 
     # Recording start time
     recording_start_ts: NaiveDatetime
+
+    # TODO: add to Profusion converter
+    lights_off: Optional[NaiveDatetime] = None
+    lights_on: Optional[NaiveDatetime] = None
+    analysis_start: Optional[NaiveDatetime] = None
+    analysis_end: Optional[NaiveDatetime] = None
 
     age: Optional[float] = None
     bmi: Optional[float] = None
