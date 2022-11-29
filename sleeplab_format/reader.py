@@ -2,7 +2,6 @@
 
 The data will be validated while parsing.
 """
-import json
 import logging
 
 from sleeplab_format.models import *
@@ -21,7 +20,7 @@ def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
         if p.is_dir():
             attributes = ArrayAttributes.parse_file(p / 'attributes.json')
 
-            val_path = [f for f in p.iterdir() if f.suffix == '.npy']
+            val_path = [f for f in p.iterdir() if f.name == 'data.npy']
             assert len(val_path) == 1, 'exactly one .npy file required for array values'
             val_path = val_path[0]
             values_func = lazy_memmap_array(val_path)

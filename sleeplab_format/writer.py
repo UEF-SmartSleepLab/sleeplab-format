@@ -38,7 +38,7 @@ def write_sample_arrays(
             sarr.attributes.json(indent=JSON_INDENT, exclude_unset=True))
 
         # Write the array
-        arr_fname = f'{subject.metadata.subject_id}_{sarr.attributes.name}.npy'
+        arr_fname = 'data.npy'
         np.save(sarr_path / arr_fname, sarr.values, allow_pickle=False)
 
 

@@ -150,7 +150,7 @@ def create_datasets(basedir: Path) -> None:
             with open(attr_path, 'w') as f:
                 json.dump(v['attributes'], f, indent=2)
 
-            values_path = sarr_path / f'{sid}_{k}.npy'
+            values_path = sarr_path / f'data.npy'
             np.save(values_path, v['values'], allow_pickle=False)
 
         events_path = subject_dir / 'events_annotated.json'
