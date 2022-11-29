@@ -1,7 +1,7 @@
 import pytest
 import shutil
 
-from dataset_generation.models import *
+from sleeplab_format.models import *
 from pathlib import Path
 
 # Use the same functions in fixtures that were used to create test files

@@ -1,6 +1,6 @@
 import subprocess
 
-from dataset_generation import writer
+from sleeplab_format import writer
 from pathlib import Path
 
 

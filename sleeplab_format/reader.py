@@ -5,7 +5,7 @@ The data will be validated while parsing.
 import json
 import logging
 
-from dataset_generation.models import *
+from sleeplab_format.models import *
 from pathlib import Path
 
 

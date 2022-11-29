@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from dataset_generation.models import *
+from sleeplab_format.models import *
 from pydantic import ValidationError
 
 

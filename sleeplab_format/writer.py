@@ -6,7 +6,7 @@ dataset_generation.data_types
 import logging
 import numpy as np
 
-from dataset_generation.models import *
+from sleeplab_format.models import *
 from pathlib import Path
 
 

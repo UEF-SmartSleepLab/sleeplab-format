@@ -4,8 +4,8 @@ import logging
 import re
 import xmltodict
 
-from dataset_generation import edf, writer
-from dataset_generation.models import *
+from sleeplab_format import edf, writer
+from sleeplab_format.models import *
 from datetime import datetime, time, timedelta
 from pathlib import Path
 from typing import Any, Callable
