@@ -87,7 +87,7 @@ def parse_study_logs(log_file_path: Path, start_ts: datetime) -> list[LogEntry]:
         try:
             time_str, _, _, text = l.split(sep=',', maxsplit=3)
         except ValueError:
-            logger.warn(f'Could not parse line\n\t{l}\n\tfrom log file {log_file_path}')
+            logger.warning(f'Could not parse line\n\t{l}\n\tfrom log file {log_file_path}')
             return None
         _time = str_to_time(time_str)
         ts = resolve_datetime(log_start_ts, _time)
@@ -97,6 +97,9 @@ def parse_study_logs(log_file_path: Path, start_ts: datetime) -> list[LogEntry]:
     with open(log_file_path, 'r') as f:
         lines = f.readlines()
         
+    if len(lines) == 0:
+        return None
+    
     first_log_time_str = lines[0].split(',', maxsplit=1)[0].strip()
     log_start_ts = resolve_log_start_ts(start_ts, str_to_time(first_log_time_str))
 
@@ -220,7 +223,10 @@ def parse_sleep_stage(
         'N1': SleepStage.N1,
         'N2': SleepStage.N2,
         'N3': SleepStage.N3,
-        'R': SleepStage.REM
+        'R': SleepStage.REM,
+        'U': SleepStage.UNSCORED,
+        '?': SleepStage.UNSURE,
+        'A': SleepStage.UNSCORED  # Put artifact to unscored for now
     }
     
     return SleepStageAnnotation(
@@ -246,7 +252,7 @@ def parse_hypnogram(
         return None
     
     hg_str = [l.strip() for l in hg_str]
-    _msg = 'Hypnograms from xml and txt files have different lengths'
+    _msg = f'Hypnograms from xml and txt files have different lengths ({len(hg_int)} =! {len(hg_str)})'
     assert len(hg_int) == len(hg_str), _msg
     
     # This is not needed anymore since writing hypnograms as annotations
@@ -307,6 +313,7 @@ def read_data(
     """Read data from `basedir` and parse to sleeplab Dataset."""
     subjects = {}
     for subject_dir in src_dir.iterdir():
+        logger.info(f'Start parsing subject {subject_dir.name}')
         subject = parse_subject(subject_dir, file_names=file_names)
         subjects[subject.metadata.subject_id] = subject
 
