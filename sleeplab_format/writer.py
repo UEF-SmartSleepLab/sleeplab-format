@@ -39,7 +39,7 @@ def write_sample_arrays(
 
         # Write the array
         arr_fname = 'data.npy'
-        np.save(sarr_path / arr_fname, sarr.values, allow_pickle=False)
+        np.save(sarr_path / arr_fname, sarr.values_func(), allow_pickle=False)
 
 
 def write_annotations(

@@ -7,14 +7,18 @@ from pathlib import Path
 from typing import Any, Optional
 
 
-def read_signal_from_path(edf_path: str, idx: int, digital: bool = False) -> np.array:
+def read_signal_from_path(
+        edf_path: str,
+        idx: int,
+        digital: bool = False,
+        dtype: np.dtype = np.float32) -> np.array:
     with pyedflib.EdfReader(edf_path) as hdl:
         # Read as digital if need to rewrite EDF
         # since otherwise will crash due to shifted values
         # https://github.com/holgern/pyedflib/issues/46
         s = hdl.readSignal(idx, digital=digital)
 
-    return np.array(s)
+    return np.array(s).astype(dtype)
 
 
 def read_signal_from_hdl(
@@ -29,7 +33,8 @@ def read_signal_from_hdl(
 
 def read_edf_export(edf_path: Path,
                     digital: bool = False,
-                    ch_names: Optional[list[str]] = None
+                    ch_names: Optional[list[str]] = None,
+                    dtype: np.dtype = np.float32
                     ) -> tuple[list[np.array], list[dict[str, Any]], dict[str, Any]]:
     """Read the EDF file and return signals and headers separately.
     
@@ -62,7 +67,7 @@ def read_edf_export(edf_path: Path,
             signal_headers.append(s_header)
             
             s_func = partial(
-                read_signal_from_path, edf_path=edf_path_str, idx=i, digital=digital)
+                read_signal_from_path, edf_path=edf_path_str, idx=i, digital=digital, dtype=dtype)
             # s_func = partial(
             #     read_signal_from_hdl, handle=hdl, idx=i, digital=digital)
             s_load_funcs.append(s_func)
