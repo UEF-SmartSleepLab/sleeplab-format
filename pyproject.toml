@@ -1,3 +1,65 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sleeplab-format"
+dynamic = ["version"]
+description = "Tools for transforming heterogeneous source data to a unified format"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Riku Huttunen", email = "riku.huttunen@uef.fi" },
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "pydantic",
+    "pyedflib",
+    "xmltodict",
+]
+
+[project.scripts]
+profusion_convert = "profusion.convert:cli_convert_dataset"
+
+[project.urls]
+Documentation = "https://github.com/UEF-SmartSleepLab/sleeplab-format#readme"
+Issues = "https://github.com/UEF-SmartSleepLab/sleeplab-format/issues"
+Source = "https://github.com/UEF-SmartSleepLab/sleeplab-format"
+
+[tool.hatch.version]
+path = "profusion/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/profusion",
+]
+
+[tool.hatch.envs.default]
+dependencies = [
+  "pytest",
+  "pytest-cov",
+]
+
+[tool.hatch.envs.default.scripts]
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=sleeplab_format --cov=tests {args}"
+no-cov = "cov --no-cov {args}"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["39", "310", "311"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+  "sleeplab_format/version.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
