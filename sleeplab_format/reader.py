@@ -75,10 +75,15 @@ def read_series(series_dir: Path) -> Series:
     )
 
 
-def read_dataset(ds_dir: Path) -> Dataset:
+def read_dataset(ds_dir: Path, series_names: list[str] | None = None) -> Dataset:
     name = ds_dir.stem
-    series = {series_dir.stem: read_series(series_dir)
-        for series_dir in ds_dir.iterdir()}
+    if series_names is None:
+        series = {series_dir.stem: read_series(series_dir)
+            for series_dir in ds_dir.iterdir()}
+    else:
+        series = {series_name: read_series(ds_dir / series_name)
+            for series_name in series_names}
+    
     return Dataset(
         name=name,
         series=series

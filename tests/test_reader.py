@@ -41,6 +41,13 @@ def test_read_dataset(dataset):
     _assert_datasets_equal(dataset, ds_read)
 
 
+def test_read_ds_specify_series(dataset):
+    tests_ds_dir = Path(__file__).parent / 'datasets' / 'dataset1'
+    ds_read = reader.read_dataset(tests_ds_dir, series_names=['series1'])
+
+    _assert_datasets_equal(dataset, ds_read)
+
+
 def test_write_read(dataset, tmp_path):
     ds_dir = tmp_path / 'datasets'
     writer.write_dataset(dataset, ds_dir)
