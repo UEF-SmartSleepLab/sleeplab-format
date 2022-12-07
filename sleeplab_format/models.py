@@ -6,7 +6,7 @@ from collections.abc import Callable
 from datetime import datetime
 from enum import Enum
 from functools import cached_property
-from pydantic import BaseModel, Extra, validator
+from pydantic import BaseModel, Extra, Field, validator
 from pydantic.datetime_parse import parse_datetime
 from typing import Any, Optional
 
@@ -164,14 +164,14 @@ class Logs(BaseModel):
 
 class Subject(BaseModel, extra=Extra.forbid):
     metadata: SubjectMetadata
-    sample_arrays: Optional[dict[str, SampleArray]] = None
-    annotations: Optional[dict[str, Annotations]] = None
-    study_logs: Optional[Logs] = None
+    sample_arrays: Optional[dict[str, SampleArray]] = Field(None, repr=False)
+    annotations: Optional[dict[str, Annotations]] = Field(None, repr=False)
+    study_logs: Optional[Logs] = Field(None, repr=False)
 
 
 class Series(BaseModel, extra=Extra.forbid):
     name: str
-    subjects: dict[str, Subject]
+    subjects: dict[str, Subject] = Field(repr=False)
 
 
 class Dataset(BaseModel, extra=Extra.forbid):
