@@ -94,8 +94,12 @@ def parse_study_logs(log_file_path: Path, start_ts: datetime) -> list[LogEntry]:
         return LogEntry(ts=ts, text=text)
     
     res = []
-    with open(log_file_path, 'r') as f:
-        lines = f.readlines()
+    try:
+        with open(log_file_path, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        logger.warning(f'Log file not found: {log_file_path}')
+        return None
         
     if len(lines) == 0:
         return None
