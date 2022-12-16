@@ -55,6 +55,13 @@ def test_write_read(dataset, tmp_path):
     _assert_datasets_equal(dataset, ds_read)
 
 
+def test_write_read_parquet(dataset, tmp_path):
+    ds_dir = tmp_path / 'datasets'
+    writer.write_dataset(dataset, ds_dir, annotation_format='parquet')
+    ds_read = reader.read_dataset(ds_dir / dataset.name)
+    _assert_datasets_equal(dataset, ds_read)
+
+
 def test_read_write(tmp_path):
     tests_ds_dir = Path(__file__).parent / 'datasets'
     ds_read = reader.read_dataset(tests_ds_dir / 'dataset1')

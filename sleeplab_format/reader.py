@@ -2,7 +2,9 @@
 
 The data will be validated while parsing.
 """
+import json
 import logging
+import pandas as pd
 
 from sleeplab_format.models import *
 from pathlib import Path
@@ -11,7 +13,9 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
-ANNOTATION_SUFFIX = '_annotated.json'
+JSON_ANNOTATION_SUFFIX = '_annotated.json'
+PARQUET_ANNOTATION_SUFFIX = '_annotated.parquet'
+PARQUET_ANNOTATION_META_SUFFIX = '_annotated_metadata.json'
 
 
 def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
@@ -32,9 +36,20 @@ def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
     annotations = {}
     for p in subject_dir.iterdir():
 
-        if p.is_file() and p.name.endswith(ANNOTATION_SUFFIX):            
-            annotation_name = p.name.removesuffix(ANNOTATION_SUFFIX)
+        if p.name.endswith(JSON_ANNOTATION_SUFFIX):            
+            annotation_name = p.name.removesuffix(JSON_ANNOTATION_SUFFIX)
             annotations[annotation_name] = Annotations.parse_file(p)
+        elif p.name.endswith(PARQUET_ANNOTATION_SUFFIX):
+            annotation_name = p.name.removesuffix(PARQUET_ANNOTATION_SUFFIX)
+            annotation_meta_path = subject_dir / f'{annotation_name}{PARQUET_ANNOTATION_META_SUFFIX}'
+
+            with open(annotation_meta_path, 'r') as f:
+                ann_dict = json.load(f)
+
+            ann_df = pd.read_parquet(p)
+            ann_dict['annotations'] = ann_df.to_dict('records')
+
+            annotations[annotation_name] = Annotations.parse_obj(ann_dict)
 
     if len(annotations) == 0:
         return None
@@ -42,12 +57,17 @@ def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
 
 
 def read_study_logs(subject_dir: Path) -> list[LogEntry] | None:
-    p = subject_dir / 'study_logs.json'
-    if not p.exists():
-        return None
+    p_json = subject_dir / 'study_logs.json'
+    if p_json.exists():
+        logs = Logs.parse_file(p_json)
+        return logs
     
-    logs = Logs.parse_file(p)
-    return logs
+    p_parquet = subject_dir / 'study_logs.parquet'
+    if p_parquet.exists():
+        logs = pd.read_parquet(p_parquet).to_dict('records')
+        return Logs.parse_obj({'logs': logs})
+
+    return None
 
 
 def read_subject(subject_dir: Path) -> Subject:
