@@ -70,14 +70,23 @@ def read_study_logs(subject_dir: Path) -> list[LogEntry] | None:
     return None
 
 
-def read_subject(subject_dir: Path) -> Subject:
+def read_subject(
+        subject_dir: Path,
+        include_logs: bool = True,
+        include_annotations: bool = True) -> Subject:
     metadata = SubjectMetadata.parse_file(subject_dir / 'metadata.json')
     
     sample_arrays = read_sample_arrays(subject_dir)
 
-    annotations = read_annotations(subject_dir)
+    if include_annotations:
+        annotations = read_annotations(subject_dir)
+    else:
+        annotations = None
 
-    study_logs = read_study_logs(subject_dir)
+    if include_logs:
+        study_logs = read_study_logs(subject_dir)
+    else:
+        study_logs = None
 
     return Subject(
         metadata=metadata,
@@ -87,21 +96,31 @@ def read_subject(subject_dir: Path) -> Subject:
     )
 
 
-def read_series(series_dir: Path) -> Series:
+def read_series(
+        series_dir: Path,
+        include_logs: bool = True,
+        include_annotations: bool = True) -> Series:
     return Series(
         name=series_dir.stem,
-        subjects={subject_dir.stem: read_subject(subject_dir)
+        subjects={subject_dir.stem: read_subject(
+                subject_dir, include_logs=include_logs, include_annotations=include_annotations)
             for subject_dir in series_dir.iterdir()}
     )
 
 
-def read_dataset(ds_dir: Path, series_names: list[str] | None = None) -> Dataset:
+def read_dataset(
+        ds_dir: Path,
+        series_names: list[str] | None = None,
+        include_logs: bool = True,
+        include_annotations: bool = True) -> Dataset:
     name = ds_dir.stem
     if series_names is None:
-        series = {series_dir.stem: read_series(series_dir)
+        series = {series_dir.stem: read_series(
+                series_dir, include_logs=include_logs, include_annotations=include_annotations)
             for series_dir in ds_dir.iterdir()}
     else:
-        series = {series_name: read_series(ds_dir / series_name)
+        series = {series_name: read_series(
+                ds_dir / series_name, include_logs=include_logs, include_annotations=include_annotations)
             for series_name in series_names}
     
     return Dataset(
