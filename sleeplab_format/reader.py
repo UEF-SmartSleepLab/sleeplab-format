@@ -101,8 +101,8 @@ def read_series(
         include_logs: bool = True,
         include_annotations: bool = True) -> Series:
     return Series(
-        name=series_dir.stem,
-        subjects={subject_dir.stem: read_subject(
+        name=series_dir.name,
+        subjects={subject_dir.name: read_subject(
                 subject_dir, include_logs=include_logs, include_annotations=include_annotations)
             for subject_dir in series_dir.iterdir()}
     )
@@ -113,9 +113,9 @@ def read_dataset(
         series_names: list[str] | None = None,
         include_logs: bool = True,
         include_annotations: bool = True) -> Dataset:
-    name = ds_dir.stem
+    name = ds_dir.name
     if series_names is None:
-        series = {series_dir.stem: read_series(
+        series = {series_dir.name: read_series(
                 series_dir, include_logs=include_logs, include_annotations=include_annotations)
             for series_dir in ds_dir.iterdir()}
     else:
