@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.scripts]
-profusion_convert = "profusion.convert:cli_convert_dataset"
+profusion_convert = "sleeplab_format.converters.profusion.convert:cli_convert_dataset"
 
 [project.urls]
 Documentation = "https://github.com/UEF-SmartSleepLab/sleeplab-format#readme"
@@ -30,12 +30,7 @@ Issues = "https://github.com/UEF-SmartSleepLab/sleeplab-format/issues"
 Source = "https://github.com/UEF-SmartSleepLab/sleeplab-format"
 
 [tool.hatch.version]
-path = "profusion/__init__.py"
-
-[tool.hatch.build.targets.sdist]
-include = [
-    "/profusion",
-]
+path = "sleeplab_format/version.py"
 
 [tool.hatch.envs.default]
 dependencies = [
