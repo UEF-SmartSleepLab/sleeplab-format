@@ -6,12 +6,6 @@ from sleeplab_format import writer
 
 
 @pytest.fixture(scope='session')
-def example_config_path():
-    data_dir = Path(__file__).parent / 'data'
-    return data_dir / 'example_config.yml'
-
-
-@pytest.fixture(scope='session')
 def subject_ids():
     return ['10001', '10002', '10003']
 
