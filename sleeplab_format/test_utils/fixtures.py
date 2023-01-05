@@ -57,7 +57,7 @@ def events():
             }
         },
         {
-            'name': 'central_apnea',
+            'name': 'apnea_central',
             'start_ts': '2018-01-01T23:10:24',
             'start_sec': 20.0,
             'duration': 10.0
