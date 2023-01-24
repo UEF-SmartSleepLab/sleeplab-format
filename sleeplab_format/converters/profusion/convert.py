@@ -128,17 +128,34 @@ def parse_annotation(d: dict[str, Any], start_ts: datetime) -> Annotation:
     else:
         extra_attributes = None
 
-    # TODO: switch to standardized event annotations
-    # similarly to parse_sleep_stage. Something like:
-    # profusion_aasm_event_map = {
-    #     'Obstructive Apnea': AASMEvent.APNEA_OBSTRUCTIVE,
-    #     'Hypopnea': AASMEvent.HYPOPNEA,
-    #     ...
-    # }
-    # name = profusion_aasm_event_map[name]
-    # return AASMAnnotation(...)
-    return Annotation(
-        name=name,
+    profusion_aasm_event_map = {
+        'Unsure': AASMEvent.UNSURE,
+
+        # Score all artifacts as ARTIFACT
+        'SpO2 artifact': AASMEvent.ARTIFACT,
+        'TcCO2 artifact': AASMEvent.ARTIFACT,
+        'ECG Artifact': AASMEvent.ARTIFACT,
+
+        'Arousal (ARO RES)': AASMEvent.AROUSAL_RES,
+        'Arousal (ARO SPONT)': AASMEvent.AROUSAL_SPONT,
+        'Arousal (ARO PLM)': AASMEvent.AROUSAL_PLM,
+        'Arousal (ARO Limb)': AASMEvent.AROUSAL_LM,
+        'RERA': AASMEvent.RERA,
+
+        'Limb Movement (Left)': AASMEvent.LM_LEFT,
+        'Limb Movement (Right)': AASMEvent.LM_RIGHT,
+        'PLM (Left)': AASMEvent.PLM_LEFT,
+        'PLM (Right)': AASMEvent.PLM_RIGHT,
+
+        'Central Apnea': AASMEvent.APNEA_CENTRAL,
+        'Obstructive Apnea': AASMEvent.APNEA_OBSTRUCTIVE,
+        'Mixed Apnea': AASMEvent.APNEA_MIXED,
+        'Hypopnea': AASMEvent.HYPOPNEA,
+        'SpO2 desaturation': AASMEvent.SPO2_DESAT
+    }
+
+    return AASMAnnotation(
+        name=profusion_aasm_event_map[name],
         start_ts=_start_ts,
         start_sec=start_sec,
         duration=duration,
@@ -166,7 +183,7 @@ def parse_xml(
         for e in xml_events:
             events.append(parse_annotation(e, start_ts))
 
-        annotations = {'events': Annotations(scorer=scorer, annotations=events)}
+        annotations = {'events': AASMAnnotations(scorer=scorer, annotations=events)}
     else:
         annotations = None
 
@@ -239,7 +256,7 @@ def parse_sleep_stage(
         'R': SleepStage.REM,
         'U': SleepStage.UNSCORED,
         '?': SleepStage.UNSURE,
-        'A': SleepStage.UNSCORED  # Put artifact to unscored for now
+        'A': SleepStage.ARTIFACT
     }
     
     return SleepStageAnnotation(

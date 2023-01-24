@@ -52,9 +52,19 @@ class SleepStage(str, Enum):
 
 class AASMEvent(str, Enum):
     """Enum for events scored according to the AASM manual v2.4."""
+    # A generic class for artifacts
+    ARTIFACT = 'ARTIFACT'
+
+    # A generic class for unsure
+    UNSURE = 'UNSURE'
+
     # Arousal events
     AROUSAL = 'AROUSAL'
-    AROUSAL_RESPIRATORY = 'AROUSAL_RESPIRATORY'
+    AROUSAL_RES = 'AROUSAL_RES'
+    AROUSAL_SPONT = 'AROUSAL_SPONT'
+    AROUSAL_LM = 'AROUSAL_LM'
+    AROUSAL_PLM = 'AROUSAL_PLM'
+    RERA = 'RERA'
 
     # Cardiac events
     # TODO: Add these if a use case ever pops up
@@ -62,7 +72,11 @@ class AASMEvent(str, Enum):
     # Movement events
     BRUXISM = 'BRUXISM'
     LM = 'LM'  # Leg movement
+    LM_LEFT = 'LM_LEFT',
+    LM_RIGHT = 'LM_RIGHT',
     PLM = 'PLM'  # Periodic leg movement
+    PLM_LEFT = 'PLM_LEFT'
+    PLM_RIGHT = 'PLM_RIGHT'
     
     # Respiratory events
     APNEA = 'APNEA'
@@ -74,9 +88,6 @@ class AASMEvent(str, Enum):
     HYPOPNEA_OBSTRUCTIVE = 'HYPOPNEA_OBSTRUCTIVE'
     SPO2_DESAT = 'SPO2_DESAT'
     SNORE = 'SNORE'
-    # TODO:
-    # HYPOVENTILATION?
-    # CHEYNE_STOKES?
 
 
 class SubjectMetadata(BaseModel, extra=Extra.forbid):
