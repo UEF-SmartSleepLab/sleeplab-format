@@ -47,6 +47,36 @@ class SleepStage(str, Enum):
     REM = 'REM'
     UNSURE = 'UNSURE'
     UNSCORED = 'UNSCORED'
+    ARTIFACT = 'ARTIFACT'
+
+
+class AASMEvent(str, Enum):
+    """Enum for events scored according to the AASM manual v2.4."""
+    # Arousal events
+    AROUSAL = 'AROUSAL'
+    AROUSAL_RESPIRATORY = 'AROUSAL_RESPIRATORY'
+
+    # Cardiac events
+    # TODO: Add these if a use case ever pops up
+
+    # Movement events
+    BRUXISM = 'BRUXISM'
+    LM = 'LM'  # Leg movement
+    PLM = 'PLM'  # Periodic leg movement
+    
+    # Respiratory events
+    APNEA = 'APNEA'
+    APNEA_CENTRAL = 'APNEA_CENTRAL'
+    APNEA_OBSTRUCTIVE = 'APNEA_OBSTRUCTIVE'
+    APNEA_MIXED = 'APNEA_MIXED'
+    HYPOPNEA = 'HYPOPNEA'
+    HYPOPNEA_CENTRAL = 'HYPOPNEA_CENTRAL'
+    HYPOPNEA_OBSTRUCTIVE = 'HYPOPNEA_OBSTRUCTIVE'
+    SPO2_DESAT = 'SPO2_DESAT'
+    SNORE = 'SNORE'
+    # TODO:
+    # HYPOVENTILATION?
+    # CHEYNE_STOKES?
 
 
 class SubjectMetadata(BaseModel, extra=Extra.forbid):
@@ -148,6 +178,14 @@ class SleepStageAnnotation(Annotation):
 class Hypnogram(Annotations):
     """A hypnogram is Annotations consisting of sleep stages."""
     annotations: list[SleepStageAnnotation]
+
+
+class AASMAnnotation(Annotation):
+    name: AASMEvent
+
+
+class AASMAnnotations(Annotations):
+    annotations: list[AASMAnnotation]
 
 
 class LogEntry(BaseModel, extra=Extra.forbid):

@@ -128,6 +128,15 @@ def parse_annotation(d: dict[str, Any], start_ts: datetime) -> Annotation:
     else:
         extra_attributes = None
 
+    # TODO: switch to standardized event annotations
+    # similarly to parse_sleep_stage. Something like:
+    # profusion_aasm_event_map = {
+    #     'Obstructive Apnea': AASMEvent.APNEA_OBSTRUCTIVE,
+    #     'Hypopnea': AASMEvent.HYPOPNEA,
+    #     ...
+    # }
+    # name = profusion_aasm_event_map[name]
+    # return AASMAnnotation(...)
     return Annotation(
         name=name,
         start_ts=_start_ts,
@@ -180,7 +189,7 @@ def parse_edf(edf_path: Path) -> tuple[datetime, dict[str, SampleArray]]:
             _header: dict[str, Any]) -> SampleArray:
         array_attributes = ArrayAttributes(
             # Replace '/' with '_' to avoid errors in filepaths
-            name=_header['label'].replace('/', '_'),
+            name=_header['label'].replace('/', '_').replace('\s', '_'),
             start_ts=start_ts,
             sampling_rate=_header['sample_frequency'],
             unit=_header['dimension']

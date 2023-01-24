@@ -1,6 +1,5 @@
 import pytest
 
-from pathlib import Path
 from sleeplab_format.models import *
 from sleeplab_format import writer
 
@@ -47,7 +46,7 @@ def events():
     return {
         'annotations': [
         {
-            'name': 'spo2_desat',
+            'name': 'SPO2_DESAT',
             'start_ts': '2018-01-01T23:10:04',
             'start_sec': 0.0,
             'duration': 15.0,
@@ -57,13 +56,13 @@ def events():
             }
         },
         {
-            'name': 'apnea_central',
+            'name': 'APNEA_CENTRAL',
             'start_ts': '2018-01-01T23:10:24',
             'start_sec': 20.0,
             'duration': 10.0
         },
         {
-            'name': 'hypopnea',
+            'name': 'HYPOPNEA',
             'start_ts': '2018-01-01T23:10:34',
             'start_sec': 30.0,
             'duration': 10.0,
@@ -128,8 +127,8 @@ def subjects(subject_ids):
             metadata=metadata,
             sample_arrays=arrays,
             annotations={
-                'events': Annotations.parse_obj(events()),
-                'hypnogram': Annotations.parse_obj(hypnogram())
+                'events': AASMAnnotations.parse_obj(events()),
+                'hypnogram': Hypnogram.parse_obj(hypnogram())
             },
             study_logs=Logs.parse_obj(study_logs()))
 
