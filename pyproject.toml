@@ -30,7 +30,7 @@ Issues = "https://github.com/UEF-SmartSleepLab/sleeplab-format/issues"
 Source = "https://github.com/UEF-SmartSleepLab/sleeplab-format"
 
 [tool.hatch.version]
-path = "sleeplab_format/version.py"
+path = "src/sleeplab_format/version.py"
 
 [tool.hatch.envs.default]
 dependencies = [
@@ -39,7 +39,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.default.scripts]
-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=sleeplab_format --cov=tests {args}"
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/sleeplab_format --cov=tests {args}"
 no-cov = "cov --no-cov {args}"
 
 [[tool.hatch.envs.test.matrix]]
@@ -49,7 +49,7 @@ python = ["39", "310", "311"]
 branch = true
 parallel = true
 omit = [
-  "sleeplab_format/version.py",
+  "src/sleeplab_format/version.py",
 ]
 
 [tool.coverage.report]
