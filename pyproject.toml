@@ -17,8 +17,6 @@ dependencies = [
     "pandas",
     "pyarrow",
     "pydantic",
-    "pyedflib",
-    "xmltodict",
 ]
 
 [project.scripts]
