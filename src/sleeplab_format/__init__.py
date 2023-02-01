@@ -1,6 +1,6 @@
 import logging
 
-from . import edf, models, reader, writer
+from . import models, reader, writer
 
 
 logging.basicConfig(
