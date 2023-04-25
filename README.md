@@ -7,6 +7,14 @@
 
 Tools for transforming heterogeneous sleep measurement data to a unified format.
 
+## Related tools
+
+[sleeplab-converters](https://github.com/UEF-SmartSleepLab/sleeplab-converters) for converting other formats exported from PSG software to sleeplab format.
+
+[sleeplab-extractor](https://github.com/UEF-SmartSleepLab/sleeplab-extractor) for extracting and preprocessing a subset of data in sleeplab format for the needs of specific studies.
+
+[sleeplab-tf-dataset](https://github.com/UEF-SmartSleepLab/sleeplab-tf-dataset) for reading data in sleeplab format as a tensorflow Dataset.
+
 ## Installation
 
 For development, you need to [install from cloned repository](#install-from-cloned-repository). To just use the current version, [install with pip from github](#install-with-pip-from-github).
