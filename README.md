@@ -1,3 +1,6 @@
+
+
+[![DOI](https://zenodo.org/badge/558261131.svg)](https://zenodo.org/badge/latestdoi/558261131)
 # sleeplab-format
 
 **NOTE: this software is under initial development, breaking changes may occur.**
