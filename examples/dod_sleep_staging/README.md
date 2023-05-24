@@ -29,9 +29,3 @@ python convert_data.py --src-dir /tmp/dod --dst-dir /tmp/dod_slf
 ```bash
 python train.py --ds-dir /tmp/dod_slf --model-dir /tmp/dod_model
 ```
-
-## Evaluate the trained model
-
-```bash
-python evaluate.py --ds-dir /tmp/dod_slf --model_dir /tmp/dod_model
-```
