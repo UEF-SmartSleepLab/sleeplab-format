@@ -40,5 +40,5 @@ sleeplab-extract --src_dir /tmp/slf/dod --dst_dir /tmp/slf/dod_extracted --confi
 Now, use the preprocessed 64Hz data for automatic sleep staging. The model and training loop are defined in `train.py`.
 
 ```bash
-python train.py --model-dir /tmp/dod_models
+python train.py --model-dir /tmp/dod_models --epochs 100
 ```

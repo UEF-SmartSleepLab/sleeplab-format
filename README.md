@@ -49,6 +49,10 @@ You can confirm that the project has been installed by:
 pip show sleeplab-format
 ```
 
+## Usage
+
+See [the automatic sleep staging example](examples/dod_sleep_staging/README.md) for a full end-to-end example.
+
 ## Running tests
 
 This project uses `pytest` for testing. To run the tests after cloning and installing, go to the root of the cloned repository and run:
