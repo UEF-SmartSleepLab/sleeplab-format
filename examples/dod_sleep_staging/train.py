@@ -6,7 +6,7 @@ import tensorflow as tf
 from pathlib import Path
 
 
-def conv_block(x, filters, kernel_size): 
+def conv_block(x, filters, kernel_size):
     x = tf.keras.layers.Conv1D(
         filters=filters, kernel_size=kernel_size, padding='SAME')(x)
     x = tf.keras.layers.BatchNormalization()(x)
@@ -29,7 +29,7 @@ def create_model(input_names, fs, n_classes=5):
         inp = tf.keras.layers.Input(shape=(None, 1), name=input_name)
         inputs.append(inp)
     x = tf.keras.layers.Concatenate(name='concat_inputs')(inputs)
-    
+
     # Create a number of conv blocks to downsample the input resolution from fs to 1Hz
     num_blocks = int(np.log2(fs))
     filters = 8
@@ -60,7 +60,7 @@ def training_loop(model_dir, epochs, fs=64.0, batch_size=8):
         inputs = {k: d[k] for k in input_names}
         outputs = {k: tf.expand_dims(d[k], -1) for k in output_names}
         return inputs, outputs
-    
+
     train_size = len(datasets['train'])
     train_ds = (datasets['train']
         .map(_io_map_func)

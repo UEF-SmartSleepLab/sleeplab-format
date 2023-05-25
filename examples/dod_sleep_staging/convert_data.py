@@ -14,7 +14,8 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
-def read_hypnogram(h5: h5py.File, start_ts: dt, epoch_sec=30.0):
+def read_hypnogram(h5: h5py.File, start_ts: dt, epoch_sec: float = 30.0) -> slf.models.Hypnogram:
+    """Read the hypnogram from .h5 file and parse to sleeplab format."""
     stage_map = {
         -1: slf.models.SleepStage.UNSCORED,
         0: slf.models.SleepStage.WAKE,
@@ -24,7 +25,6 @@ def read_hypnogram(h5: h5py.File, start_ts: dt, epoch_sec=30.0):
         4: slf.models.SleepStage.REM
     }
     h5_hg = h5['hypnogram'][:]
-    #start_ts = dt.fromtimestamp(h5.attrs['start_time'])
     annotations = []
 
     for i, h5_stage in enumerate(h5_hg):
@@ -40,14 +40,17 @@ def read_hypnogram(h5: h5py.File, start_ts: dt, epoch_sec=30.0):
     return slf.models.Hypnogram(annotations=annotations, scorer='manual_consensus')
 
 
-def read_signal_from_h5_file(h5_path: Path, signal_type: str, signal_name: str):
+def read_signal_from_h5_file(h5_path: Path, signal_type: str, signal_name: str) -> np.ndarray:
     h5 = h5py.File(h5_path, 'r')
     s = h5['signals'][signal_type][signal_name][:].astype(np.float32)
     return s
 
 
-def read_sample_arrays(h5: h5py.File, h5_path: Path, start_ts: dt):
-    #start_ts = dt.fromtimestamp(h5.attrs['start_time'])
+def read_sample_arrays(
+        h5: h5py.File,
+        h5_path: Path,
+        start_ts: dt) -> dict[str, slf.models.SampleArray]:
+    """Read all signals from a .h5 file and parse to sleeplab format."""
     sample_arrays = {}
 
     for signal_type in h5['signals']:
@@ -76,7 +79,8 @@ def read_sample_arrays(h5: h5py.File, h5_path: Path, start_ts: dt):
     return sample_arrays
 
 
-def read_subject(h5_path: Path):
+def read_subject(h5_path: Path) -> slf.models.Subject:
+    """Read the signals and hypnogram from .h5 file and parse to sleeplab format Subject."""
     h5 = h5py.File(h5_path, 'r')
 
     # Presumably, there are no event annotations, so raise an error events are found
@@ -103,7 +107,8 @@ def read_subject(h5_path: Path):
     )
 
 
-def read_to_slf(h5_dir: Path):
+def read_to_slf(h5_dir: Path) -> slf.models.Dataset:
+    """Parse the whole dataset to sleeplab format Dataset."""
     series = {}
 
     for subdir in h5_dir.iterdir():
@@ -123,7 +128,8 @@ def read_to_slf(h5_dir: Path):
     return dataset
 
 
-def convert_data(h5_dir: Path, slf_dir: Path):
+def convert_data(h5_dir: Path, slf_dir: Path) -> None:
+    """Run the conversion from .h5 files to sleeplab format."""
     logger.info(f'Reading data to slf Dataset from {h5_dir}')
     dataset = read_to_slf(h5_dir)
 
