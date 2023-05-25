@@ -8,7 +8,7 @@ import tqdm
 from botocore import UNSIGNED
 from botocore.client import Config
 from pathlib import Path
-#from dreem_learning_open.settings import DODH_SETTINGS, DODO_SETTINGS
+
 
 def download_data(dst_dir: Path):
     client = boto3.client('s3', config=Config(signature_version=UNSIGNED))
@@ -23,7 +23,6 @@ def download_data(dst_dir: Path):
         client.download_file(
             Bucket="dreem-dod-o",
             Key=filename,
-            #Filename=DODO_SETTINGS["h5_directory"] + "/{}".format(filename)
             Filename=savepath 
         )
         
@@ -37,7 +36,6 @@ def download_data(dst_dir: Path):
         client.download_file(
             Bucket="dreem-dod-h",
             Key=filename,
-            #Filename=DODH_SETTINGS["h5_directory"] + "/{}".format(filename)
             Filename=savepath
         )
 

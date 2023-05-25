@@ -21,11 +21,24 @@ python download_data.py --dst-dir /tmp/dod
 
 Then, run the conversion
 ```bash
-python convert_data.py --src-dir /tmp/dod --dst-dir /tmp/dod_slf
+python convert_data.py --src-dir /tmp/dod --dst-dir /tmp/slf
+```
+
+## Extract and preprocess a subset of the signals
+
+Use [sleeplab-extractor](https://github.com/UEF-SmartSleepLab/sleeplab-extractor) to extract a single EEG channel, EOG channel, and EMG channel. Resample to 64Hz, highpass filter, and normalize the signals.
+
+All configurations for the extractor are in `sleeplab_extractor_config.yml`.
+
+To perform the extraction, run in this directory:
+```bash
+sleeplab-extract --src_dir /tmp/slf/dod --dst_dir /tmp/slf/dod_extracted --config_path ./sleeplab_extractor_config.yml
 ```
 
 ## Train a sleep staging model with the data
 
+Now, use the preprocessed 64Hz data for automatic sleep staging. The model and training loop are defined in `train.py`.
+
 ```bash
-python train.py --ds-dir /tmp/dod_slf --model-dir /tmp/dod_model
+python train.py --model-dir /tmp/dod_models
 ```

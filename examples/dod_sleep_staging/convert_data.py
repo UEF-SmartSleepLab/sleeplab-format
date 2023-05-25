@@ -128,8 +128,8 @@ def convert_data(h5_dir: Path, slf_dir: Path):
     dataset = read_to_slf(h5_dir)
 
     logger.info(f'Writing the dataset to {slf_dir}')
-    # Write annotations in parquet format, since sleeplab-tf-dataset supports it at the moment
-    slf.writer.write_dataset(dataset, slf_dir, annotation_format='parquet')
+    # The format for annotation files can be 'json' or 'parquet'
+    slf.writer.write_dataset(dataset, slf_dir, annotation_format='json')
 
 
 def create_parser():

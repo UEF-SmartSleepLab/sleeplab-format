@@ -14,14 +14,19 @@ logger = logging.getLogger(__name__)
 
 component_config = {
     'c3m2': {
-        'src_name': 'C3_M2',
+        'src_name': 'C3_M2_64Hz',
         'ctype': 'sample_array',
-        'fs': 250.0
+        'fs': 64.0
     },
     'eog2': {
-        'src_name': 'EOG2',
+        'src_name': 'EOG2_64Hz',
         'ctype': 'sample_array',
-        'fs': 250.0
+        'fs': 64.0
+    },
+    'emg': {
+        'src_name': 'EMG_64Hz',
+        'ctype': 'sample_array',
+        'fs': 64.0
     },
     'hypnogram': {
         'src_name': 'hypnogram_annotated.parquet',
@@ -42,7 +47,7 @@ component_config = {
 
 dataset_config = {
     'dodh': {
-        'ds_dir': '/tmp/slf/dod',
+        'ds_dir': '/tmp/slf/dod_extracted/dod',
         'series_name': 'dodh',
         'roi_src_type': 'annotation',
         'roi_src_name': 'hypnogram',
@@ -74,7 +79,7 @@ dataset_config = {
         }
     },
     'dodo': {
-        'ds_dir': '/tmp/slf/dod',
+        'ds_dir': '/tmp/slf/dod_extracted/dod',
         'series_name': 'dodo',
         'roi_src_type': 'annotation',
         'roi_src_name': 'hypnogram',
