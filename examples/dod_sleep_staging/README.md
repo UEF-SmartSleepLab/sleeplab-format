@@ -2,7 +2,9 @@
 
 This is an end-to-end example of how to convert data from another format to sleeplab format, how to preprocess the data using sleeplab-extractor, and how to train a deep learning model utilizing sleeplab-tf-dataset. This example uses data from Dreem Open Datasets (DOD) since the DOD is well documented and open access ([https://doi.org/10.1109/TNSRE.2020.3011181](https://doi.org/10.1109/TNSRE.2020.3011181)).
 
-The examples below use `/tmp` as the base directory. Substitute it with another location if you want to persist the data and results. The code is developed and tested with Linux and Python 3.10.
+## Prerequisites
+
+ The code is developed and tested with Linux and Python 3.10. Windows users can install [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install) to run this example (and to use Linux for development in general).
 
 ## Install dependencies
 
@@ -13,6 +15,8 @@ pip install -r requirements.txt
 ## Convert data to sleeplab format
 
 NOTE: This will download and convert the whole dataset with the original 250Hz sampling rate. The h5 files take 57 GB on disk, and the converted slf dataset takes 30 GB.
+
+The examples below use `/tmp` as the base directory. Substitute it with another location if you want to persist the data and results.
 
 First, download the datasets
 ```bash
