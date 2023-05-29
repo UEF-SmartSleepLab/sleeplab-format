@@ -7,8 +7,10 @@ import sleeplab_format as slf
 
 from datetime import datetime as dt
 from datetime import timedelta
+from datetime import timezone
 from functools import partial
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 
 logger = logging.getLogger(__name__)
@@ -79,8 +81,13 @@ def read_sample_arrays(
     return sample_arrays
 
 
-def read_subject(h5_path: Path) -> slf.models.Subject:
-    """Read the signals and hypnogram from .h5 file and parse to sleeplab format Subject."""
+def read_subject(h5_path: Path, tz: str) -> slf.models.Subject:
+    """Read the signals and hypnogram from .h5 file and parse to sleeplab format Subject.
+
+    Args:
+        tz: The timezone as string. The original start_times are as UTC, and
+            we want to convert them to correct local times ('US/Pacific' for DOD-O, 'CET' for DOD-H)
+    """
     h5 = h5py.File(h5_path, 'r')
 
     # Presumably, there are no event annotations, so raise an error events are found
@@ -88,8 +95,13 @@ def read_subject(h5_path: Path) -> slf.models.Subject:
 
     # Some recordings are missing start_time, substitute with zero
     try:
-        start_ts = dt.fromtimestamp(h5.attrs['start_time'])
+        start_ts = (dt
+            .fromtimestamp(h5.attrs['start_time'], tz=timezone.utc)
+            .astimezone(ZoneInfo(tz))  # Use aware timestamp to specify timezone
+            .replace(tzinfo=None)  # Convert to naive timestamp
+        )
     except KeyError:
+        # If start_time is not found, just use Unix epoch 0
         start_ts = dt.utcfromtimestamp(0)
 
     sample_arrays = read_sample_arrays(h5, h5_path, start_ts)
@@ -116,9 +128,16 @@ def read_to_slf(h5_dir: Path) -> slf.models.Dataset:
         subjects = {}
         h5_paths = [p for p in subdir.iterdir() if p.suffix == '.h5']
 
+        if series_name == 'dodh':
+            # DOD-H was recorded in Bretigny-Sur-Orge, France
+            tz = 'CET'
+        elif series_name == 'dodo':
+            # DOD-O was recorded in Stanford, US
+            tz = 'US/Pacific'
+
         for h5_path in h5_paths:
             logger.info(f'Parsing subject data from {h5_path.name}')
-            subject = read_subject(h5_path)
+            subject = read_subject(h5_path, tz)
             subjects[subject.metadata.subject_id] = subject
 
         series[series_name] = slf.models.Series(name=series_name, subjects=subjects)
