@@ -66,6 +66,7 @@ def training_loop(model_dir, epochs, fs=64.0, batch_size=10):
         .map(_io_map_func)
         .batch(batch_size)
         .prefetch(tf.data.AUTOTUNE)
+        .shuffle(3 * batch_size)
         .repeat()
     )
     val_size = len(datasets['val'])
