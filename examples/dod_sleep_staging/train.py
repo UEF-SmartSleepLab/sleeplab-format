@@ -49,7 +49,7 @@ def create_model(input_names, fs, n_classes=5):
     return tf.keras.Model(inputs=inputs, outputs=[x], name='simple_cnn')
 
 
-def training_loop(model_dir, epochs, fs=64.0, batch_size=10):
+def training_loop(model_dir, epochs, fs=64.0, batch_size=5):
     # Create the datasets
     datasets = dataset.load_datasets(dataset.dataset_config)
     output_names = ['hypnogram']
@@ -64,9 +64,9 @@ def training_loop(model_dir, epochs, fs=64.0, batch_size=10):
     train_size = len(datasets['train'])
     train_ds = (datasets['train']
         .map(_io_map_func)
+        .shuffle(3 * batch_size)
         .batch(batch_size)
         .prefetch(tf.data.AUTOTUNE)
-        .shuffle(3 * batch_size)
         .repeat()
     )
     val_size = len(datasets['val'])
