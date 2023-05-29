@@ -49,7 +49,7 @@ def create_model(input_names, fs, n_classes=5):
     return tf.keras.Model(inputs=inputs, outputs=[x], name='simple_cnn')
 
 
-def training_loop(model_dir, epochs, fs=64.0, batch_size=8):
+def training_loop(model_dir, epochs, fs=64.0, batch_size=10):
     # Create the datasets
     datasets = dataset.load_datasets(dataset.dataset_config)
     output_names = ['hypnogram']
