@@ -4,7 +4,7 @@ This is an end-to-end example of how to convert data from another format to slee
 
 ## Prerequisites
 
- The code is developed and tested with Linux and Python 3.10. Windows users can install [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install) to run this example (and to use Linux for development in general).
+ **The code is developed and tested with Linux and Python 3.10**. Windows users can install [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install) to run this example (and to use Linux for development in general).
 
 ## Install dependencies
 
