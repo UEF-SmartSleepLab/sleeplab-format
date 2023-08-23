@@ -23,7 +23,7 @@ def write_subject_metadata(
         subject_path: Path) -> None:
     metadata_path = subject_path / 'metadata.json'
     metadata_path.write_text(
-        subject.metadata.json(indent=JSON_INDENT, exclude_unset=True),
+        subject.metadata.model_dump_json(indent=JSON_INDENT, exclude_unset=True),
     )
 
 
@@ -37,7 +37,7 @@ def write_sample_arrays(
         # Write the attributes
         attr_path = sarr_path / 'attributes.json'
         attr_path.write_text(
-            sarr.attributes.json(indent=JSON_INDENT, exclude_unset=True))
+            sarr.attributes.model_dump_json(indent=JSON_INDENT, exclude_unset=True))
 
         # Write the array
         arr_fname = 'data.npy'
@@ -53,14 +53,14 @@ def write_annotations(
         if format == 'json':
             json_path = subject_path / f'{k}_annotated.json'
             json_path.write_text(
-                v.json(exclude_unset=True, indent=JSON_INDENT)
+                v.model_dump_json(exclude_unset=True, indent=JSON_INDENT)
             )
         else:
             # Write the actual annotations in parquet, metadata in json
             metadata_path = subject_path / f'{k}_annotated_metadata.json'
             pq_path = subject_path / f'{k}_annotated.parquet'
             
-            ann_dict = v.dict()
+            ann_dict = v.model_dump()
             ann_list = ann_dict.pop('annotations')
             
             with open(metadata_path, 'w') as f:
@@ -74,12 +74,12 @@ def write_study_logs(subject: Subject, subject_path: Path, format: str = 'json')
     if format == 'json':
         json_path = subject_path / 'study_logs.json'
         json_path.write_text(
-            subject.study_logs.json(indent=JSON_INDENT)
+            subject.study_logs.model_dump_json(indent=JSON_INDENT)
         )
     else:
         # Write logs in parquet
         log_path = subject_path / 'study_logs.parquet'
-        log_dict = subject.study_logs.dict().pop('logs')
+        log_dict = subject.study_logs.model_dump().pop('logs')
         pd.DataFrame(log_dict).to_parquet(log_path)
 
 

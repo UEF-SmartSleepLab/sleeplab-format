@@ -6,31 +6,21 @@ from collections.abc import Callable
 from datetime import datetime
 from enum import Enum
 from functools import cached_property
-from pydantic import BaseModel, Extra, Field, validator
-from pydantic.datetime_parse import parse_datetime
+from pydantic import BaseModel, Field, model_validator
+from pydantic.functional_validators import AfterValidator
 from typing import Any, Optional
+from typing_extensions import Annotated
 
 
-SLEEPLAB_FORMAT_VERSION = '0.1'
+SLEEPLAB_FORMAT_VERSION = '0.2'
 
 
-class NaiveDatetime(datetime):
-    """Custom field that removes timezone information when serializing.
-    
-    This is needed because Pydantic automatically adds UTC as timezone
-    when serializing if naive datetime object is passed.
+def unset_tzinfo(v: datetime):
+    return v.replace(tzinfo=None)
 
-    See https://stackoverflow.com/a/70726989
-    """
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
 
-    @classmethod
-    def validate(cls, v):
-        v = parse_datetime(v)
-        v = v.replace(tzinfo=None)
-        return v
+# TODO: should the type be Any or datetime?
+NaiveDatetime = Annotated[datetime, AfterValidator(unset_tzinfo)]
 
 
 class Sex(str, Enum):
@@ -90,7 +80,7 @@ class AASMEvent(str, Enum):
     SNORE = 'SNORE'
 
 
-class SubjectMetadata(BaseModel, extra=Extra.forbid):
+class SubjectMetadata(BaseModel, extra='forbid'):
     subject_id: str
 
     # Recording start time
@@ -109,33 +99,30 @@ class SubjectMetadata(BaseModel, extra=Extra.forbid):
     additional_info: Optional[dict[str, Any]] = None
     
 
-class ArrayAttributes(BaseModel, extra=Extra.forbid,
-        # Use smart_union to keep ints ints and floats floats
-        # https://pydantic-docs.helpmanual.io/usage/model_config/#smart-union
-        smart_union=True):
+class ArrayAttributes(BaseModel, extra='forbid'):
     name: str
     start_ts: NaiveDatetime
-    sampling_rate: Optional[float | int] = None
-    sampling_interval: Optional[float | int] = None
+    sampling_rate: Optional[float] = None
+    sampling_interval: Optional[float] = None
     unit: Optional[str] = None
     value_map: Optional[dict[int, str | int]] = None
 
-    @validator('sampling_interval')
-    def require_rate_or_interval(cls, v, values):
-        if v is None:
+    @model_validator(mode='after')
+    def require_rate_or_interval(self):
+        if self.sampling_interval is None:
             _msg = 'either sampling_rate or sampling_interval needs to be defined'
-            assert values['sampling_rate'] is not None, _msg
+            assert self.sampling_rate is not None, _msg
         else:
             _msg = 'cannot define both sampling_rate and sampling_interval'
-            assert values['sampling_rate'] is None, _msg
+            assert self.sampling_rate is None, _msg
 
-        return v
+        return self
 
 
 class SampleArray(
         BaseModel,
-        extra=Extra.forbid,
-        keep_untouched=(cached_property,)):
+        extra='forbid',
+        ignored_types=(cached_property,)):
     """A pydantic model representing a numerical array with attributes.
 
     When writing data to sleeplab format, use `values_func` to access the array
@@ -155,7 +142,7 @@ class SampleArray(
         return self.values_func()
 
 
-class Annotation(BaseModel, extra=Extra.forbid):
+class Annotation(BaseModel, extra='forbid'):
     # Freely defined name of the event
     name: str
 
@@ -199,7 +186,7 @@ class AASMAnnotations(Annotations):
     annotations: list[AASMAnnotation]
 
 
-class LogEntry(BaseModel, extra=Extra.forbid):
+class LogEntry(BaseModel, extra='forbid'):
     # The log time as timestamp
     ts: NaiveDatetime
 
@@ -211,19 +198,19 @@ class Logs(BaseModel):
     logs: list[LogEntry]
 
 
-class Subject(BaseModel, extra=Extra.forbid):
+class Subject(BaseModel, extra='forbid'):
     metadata: SubjectMetadata
     sample_arrays: Optional[dict[str, SampleArray]] = Field(None, repr=False)
     annotations: Optional[dict[str, Annotations]] = Field(None, repr=False)
     study_logs: Optional[Logs] = Field(None, repr=False)
 
 
-class Series(BaseModel, extra=Extra.forbid):
+class Series(BaseModel, extra='forbid'):
     name: str
     subjects: dict[str, Subject] = Field(repr=False)
 
 
-class Dataset(BaseModel, extra=Extra.forbid):
+class Dataset(BaseModel, extra='forbid'):
     name: str
     series: dict[str, Series]
 

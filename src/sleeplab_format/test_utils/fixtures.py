@@ -25,7 +25,7 @@ def sample_arrays():
             'attributes': {
                 'name': 's1',
                 'start_ts': '2018-01-01T23:10:04',
-                'sampling_rate': 32,
+                'sampling_rate': 32.0,
                 'unit': 'V'
             },
             'values': 0.123 * np.ones(60*32, dtype=np.float32),
@@ -34,7 +34,7 @@ def sample_arrays():
             'attributes': {
                 'name': 's2',
                 'start_ts': '2018-01-01T23:10:04',
-                'sampling_rate': 64,
+                'sampling_rate': 64.0,
                 'unit': 'mV'
             },
             'values': 1.23 * np.ones(60*64, dtype=np.float32),
@@ -127,10 +127,10 @@ def subjects(subject_ids):
             metadata=metadata,
             sample_arrays=arrays,
             annotations={
-                'events': AASMAnnotations.parse_obj(events()),
-                'hypnogram': Hypnogram.parse_obj(hypnogram())
+                'events': AASMAnnotations.model_validate(events()),
+                'hypnogram': Hypnogram.model_validate(hypnogram())
             },
-            study_logs=Logs.parse_obj(study_logs()))
+            study_logs=Logs.model_validate(study_logs()))
 
     return subjs
 
