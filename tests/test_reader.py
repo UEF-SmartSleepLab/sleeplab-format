@@ -25,7 +25,11 @@ def _assert_datasets_equal(ds1, ds2):
         for (sk, subj1) in series1.subjects.items():
             subj2 = series2.subjects[sk]
             assert subj1.metadata == subj2.metadata
-            assert subj1.annotations == subj2.annotations
+            # In Pydantic v2, a subclass of a model cannot be equal to the superclass,
+            # so need to dump the model to dicts
+            annotations1 = {k: v.model_dump() for k, v in subj1.annotations.items()}
+            annotations2 = {k: v.model_dump() for k, v in subj2.annotations.items()}
+            assert annotations1 == annotations2
             assert subj1.sample_arrays.keys() == subj2.sample_arrays.keys()
             
             for (arr_k, arr1) in subj1.sample_arrays.items():

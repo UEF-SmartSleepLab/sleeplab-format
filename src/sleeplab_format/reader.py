@@ -22,7 +22,9 @@ def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
     sarrs = {}
     for p in subject_dir.iterdir():
         if p.is_dir():
-            attributes = ArrayAttributes.parse_file(p / 'attributes.json')
+            with open(p / 'attributes.json', 'rb') as f:
+                raw_data = f.read()
+                attributes = ArrayAttributes.model_validate_json(raw_data)
 
             val_path = p / 'data.npy'
             values_func = lazy_memmap_array(val_path)
@@ -38,7 +40,9 @@ def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
 
         if p.name.endswith(JSON_ANNOTATION_SUFFIX):            
             annotation_name = p.name.removesuffix(JSON_ANNOTATION_SUFFIX)
-            annotations[annotation_name] = Annotations.parse_file(p)
+            with open(p, 'rb') as f:
+                raw_data = f.read()
+                annotations[annotation_name] = Annotations.model_validate_json(raw_data)
         elif p.name.endswith(PARQUET_ANNOTATION_SUFFIX):
             annotation_name = p.name.removesuffix(PARQUET_ANNOTATION_SUFFIX)
             annotation_meta_path = subject_dir / f'{annotation_name}{PARQUET_ANNOTATION_META_SUFFIX}'
@@ -49,7 +53,7 @@ def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
             ann_df = pd.read_parquet(p)
             ann_dict['annotations'] = ann_df.to_dict('records')
 
-            annotations[annotation_name] = Annotations.parse_obj(ann_dict)
+            annotations[annotation_name] = Annotations.model_validate(ann_dict)
 
     if len(annotations) == 0:
         return None
@@ -59,13 +63,15 @@ def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
 def read_study_logs(subject_dir: Path) -> list[LogEntry] | None:
     p_json = subject_dir / 'study_logs.json'
     if p_json.exists():
-        logs = Logs.parse_file(p_json)
+        with open(p_json, 'rb') as f:
+            raw_data = f.read()
+            logs = Logs.model_validate_json(raw_data)
         return logs
     
     p_parquet = subject_dir / 'study_logs.parquet'
     if p_parquet.exists():
         logs = pd.read_parquet(p_parquet).to_dict('records')
-        return Logs.parse_obj({'logs': logs})
+        return Logs.model_validate({'logs': logs})
 
     return None
 
@@ -74,7 +80,9 @@ def read_subject(
         subject_dir: Path,
         include_logs: bool = True,
         include_annotations: bool = True) -> Subject:
-    metadata = SubjectMetadata.parse_file(subject_dir / 'metadata.json')
+    with open(subject_dir / 'metadata.json', 'rb') as f:
+        raw_data = f.read()
+        metadata = SubjectMetadata.model_validate_json(raw_data)
     
     sample_arrays = read_sample_arrays(subject_dir)
 
