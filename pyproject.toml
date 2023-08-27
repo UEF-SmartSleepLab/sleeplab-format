@@ -16,7 +16,7 @@ dependencies = [
     "numpy",
     "pandas",
     "pyarrow",
-    "pydantic",
+    "pydantic>=2.0",
 ]
 
 [project.scripts]
