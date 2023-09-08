@@ -86,7 +86,6 @@ class SubjectMetadata(BaseModel, extra='forbid'):
     # Recording start time
     recording_start_ts: NaiveDatetime
 
-    # TODO: add to Profusion converter
     lights_off: Optional[NaiveDatetime] = None
     lights_on: Optional[NaiveDatetime] = None
     analysis_start: Optional[NaiveDatetime] = None
@@ -224,3 +223,4 @@ def lazy_memmap_array(fpath):
         return np.load(fpath, mmap_mode='r', allow_pickle=False)
 
     return inner
+
