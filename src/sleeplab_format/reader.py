@@ -21,7 +21,7 @@ PARQUET_ANNOTATION_META_SUFFIX = '_annotated_metadata.json'
 def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
     sarrs = {}
     for p in subject_dir.iterdir():
-        if p.is_dir():
+        if p.is_dir() and not p.name.startswith('.'):
             with open(p / 'attributes.json', 'rb') as f:
                 raw_data = f.read()
                 attributes = ArrayAttributes.model_validate_json(raw_data)
@@ -112,7 +112,8 @@ def read_series(
         name=series_dir.name,
         subjects={subject_dir.name: read_subject(
                 subject_dir, include_logs=include_logs, include_annotations=include_annotations)
-            for subject_dir in series_dir.iterdir()}
+            for subject_dir in series_dir.iterdir()
+            if not subject_dir.name.startswith('.')}  # Ignore hidden folders.
     )
 
 
@@ -125,7 +126,8 @@ def read_dataset(
     if series_names is None:
         series = {series_dir.name: read_series(
                 series_dir, include_logs=include_logs, include_annotations=include_annotations)
-            for series_dir in ds_dir.iterdir()}
+            for series_dir in ds_dir.iterdir()
+            if not series_dir.name.startswith('.')}  # Ignore hidden folders.
     else:
         series = {series_name: read_series(
                 ds_dir / series_name, include_logs=include_logs, include_annotations=include_annotations)
