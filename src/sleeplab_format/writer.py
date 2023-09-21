@@ -9,6 +9,11 @@ import numpy as np
 import pandas as pd
 
 from sleeplab_format.models import *
+from sleeplab_format.reader import (
+    JSON_ANNOTATION_SUFFIX,
+    PARQUET_ANNOTATION_SUFFIX,
+    PARQUET_ANNOTATION_META_SUFFIX
+)
 from pathlib import Path
 
 
@@ -31,6 +36,7 @@ def write_sample_arrays(
         subject: Subject,
         subject_path: Path) -> None:
     for name, sarr in subject.sample_arrays.items():
+        assert name == sarr.attributes.name
         sarr_path = subject_path / f'{sarr.attributes.name}'
         sarr_path.mkdir(exist_ok=True)
         
@@ -49,16 +55,18 @@ def write_annotations(
         subject_path: Path,
         format: str = 'json') -> None:
     for k, v in subject.annotations.items():
+        _msg = f'Annotation key should equal to "{v.scorer}_{v.type}", got "{k}"'
+        assert k == f'{v.scorer}_{v.type}', _msg
         
         if format == 'json':
-            json_path = subject_path / f'{k}_annotated.json'
+            json_path = subject_path / f'{k}{JSON_ANNOTATION_SUFFIX}'
             json_path.write_text(
                 v.model_dump_json(exclude_unset=True, indent=JSON_INDENT)
             )
         else:
             # Write the actual annotations in parquet, metadata in json
-            metadata_path = subject_path / f'{k}_annotated_metadata.json'
-            pq_path = subject_path / f'{k}_annotated.parquet'
+            metadata_path = subject_path / f'{k}{PARQUET_ANNOTATION_META_SUFFIX}'
+            pq_path = subject_path / f'{k}{PARQUET_ANNOTATION_SUFFIX}'
             
             ann_dict = v.model_dump()
             ann_list = ann_dict.pop('annotations')
@@ -70,17 +78,17 @@ def write_annotations(
 
 
 
-def write_study_logs(subject: Subject, subject_path: Path, format: str = 'json') -> None:
-    if format == 'json':
-        json_path = subject_path / 'study_logs.json'
-        json_path.write_text(
-            subject.study_logs.model_dump_json(indent=JSON_INDENT)
-        )
-    else:
-        # Write logs in parquet
-        log_path = subject_path / 'study_logs.parquet'
-        log_dict = subject.study_logs.model_dump().pop('logs')
-        pd.DataFrame(log_dict).to_parquet(log_path)
+# def write_study_logs(subject: Subject, subject_path: Path, format: str = 'json') -> None:
+#     if format == 'json':
+#         json_path = subject_path / 'study_logs.json'
+#         json_path.write_text(
+#             subject.study_logs.model_dump_json(indent=JSON_INDENT)
+#         )
+#     else:
+#         # Write logs in parquet
+#         log_path = subject_path / 'study_logs.parquet'
+#         log_dict = subject.study_logs.model_dump().pop('logs')
+#         pd.DataFrame(log_dict).to_parquet(log_path)
 
 
 def write_subject(
@@ -95,8 +103,8 @@ def write_subject(
     if subject.annotations is not None:
         write_annotations(subject, subject_path, format=annotation_format)
 
-    if subject.study_logs is not None:
-        write_study_logs(subject, subject_path, format=annotation_format)
+    # if subject.study_logs is not None:
+    #     write_study_logs(subject, subject_path, format=annotation_format)
 
 
 def write_series(
@@ -109,6 +117,10 @@ def write_series(
         write_subject(subject, subject_path, annotation_format=annotation_format)
 
 
+def write_dataset_metadata(dataset: Dataset, dataset_path: Path) -> None:
+    pass
+
+
 def write_dataset(
         dataset: Dataset,
         basedir: str,
@@ -119,6 +131,11 @@ def write_dataset(
     dataset_path = Path(basedir) / dataset.name
     logger.info(f'Creating dataset dir {dataset_path}...')
     dataset_path.mkdir(parents=True, exist_ok=True)
+
+    # Write the dataset metadata
+    metadata_path = dataset_path / 'metadata.json'
+    metadata_path.write_text(
+        dataset.model_dump_json(exclude={'series'}, exclude_unset=True, indent=JSON_INDENT))
 
     # Write the series
     for name, series in dataset.series.items():

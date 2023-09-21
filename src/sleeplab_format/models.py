@@ -8,18 +8,18 @@ from enum import Enum
 from functools import cached_property
 from pydantic import BaseModel, Field, model_validator
 from pydantic.functional_validators import AfterValidator
-from typing import Any, Optional
+from typing import Any, Generic, Literal, Optional, TypeVar
 from typing_extensions import Annotated
+from .version import __version__
 
 
-SLEEPLAB_FORMAT_VERSION = '0.2'
+SLEEPLAB_FORMAT_VERSION = __version__
 
 
 def unset_tzinfo(v: datetime):
     return v.replace(tzinfo=None)
 
 
-# TODO: should the type be Any or datetime?
 NaiveDatetime = Annotated[datetime, AfterValidator(unset_tzinfo)]
 
 
@@ -29,7 +29,7 @@ class Sex(str, Enum):
     OTHER = 'OTHER'
 
 
-class SleepStage(str, Enum):
+class AASMSleepStage(str, Enum):
     WAKE = 'WAKE'
     N1 = 'N1'
     N2 = 'N2'
@@ -141,9 +141,12 @@ class SampleArray(
         return self.values_func()
 
 
-class Annotation(BaseModel, extra='forbid'):
+AnnotationT = TypeVar('AnnotationT', bound=str)
+
+
+class Annotation(BaseModel, Generic[AnnotationT], extra='forbid'):
     # Freely defined name of the event
-    name: str
+    name: AnnotationT
 
     # Start time as timestamp
     start_ts: NaiveDatetime
@@ -153,55 +156,46 @@ class Annotation(BaseModel, extra='forbid'):
 
     # Duration of the event in seconds
     # 0.0 if the event is a point in time
-    duration: float
+    duration: float = 0.0
 
-    # Name of the channel used to annotate the eventb
+    # Name of the channel used to annotate the event
     input_channel: Optional[str] = None
 
     # Freely defined extra attributes, such as desaturation depth
     extra_attributes: Optional[dict[str, Any]] = None
 
 
-class Annotations(BaseModel):
+class BaseAnnotations(BaseModel):
+    scorer: str
+    type: str
     annotations: list[Annotation]
-    scorer: Optional[str] = None
 
 
-class SleepStageAnnotation(Annotation):
-    """Override `name` to allow only `SleepStage` enum members."""
-    name: SleepStage
+class Annotations(BaseAnnotations):
+    type: Literal['annotations']
+    annotations: list[Annotation[str]]
 
 
-class Hypnogram(Annotations):
+class Hypnogram(BaseAnnotations):
     """A hypnogram is Annotations consisting of sleep stages."""
-    annotations: list[SleepStageAnnotation]
+    type: Literal['hypnogram']
+    annotations: list[Annotation[AASMSleepStage]]
 
 
-class AASMAnnotation(Annotation):
-    name: AASMEvent
+class AASMEvents(BaseAnnotations):
+    type: Literal['aasmevents']
+    annotations: list[Annotation[AASMEvent]]
 
 
-class AASMAnnotations(Annotations):
-    annotations: list[AASMAnnotation]
-
-
-class LogEntry(BaseModel, extra='forbid'):
-    # The log time as timestamp
-    ts: NaiveDatetime
-
-    # The log row as plain text
-    text: str
-
-
-class Logs(BaseModel):
-    logs: list[LogEntry]
+class Logs(BaseAnnotations):
+    type: Literal['logs']
+    annotations: list[Annotation[str]]
 
 
 class Subject(BaseModel, extra='forbid'):
     metadata: SubjectMetadata
     sample_arrays: Optional[dict[str, SampleArray]] = Field(None, repr=False)
-    annotations: Optional[dict[str, Annotations]] = Field(None, repr=False)
-    study_logs: Optional[Logs] = Field(None, repr=False)
+    annotations: Optional[dict[str, BaseAnnotations]] = Field(None, repr=False)
 
 
 class Series(BaseModel, extra='forbid'):
@@ -211,10 +205,8 @@ class Series(BaseModel, extra='forbid'):
 
 class Dataset(BaseModel, extra='forbid'):
     name: str
-    series: dict[str, Series]
-
-    # The sleeplab format version
     version: str = SLEEPLAB_FORMAT_VERSION
+    series: Optional[dict[str, Series]] = None
 
 
 def lazy_memmap_array(fpath):

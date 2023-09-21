@@ -5,7 +5,7 @@
 
 **NOTE: this software is under initial development, breaking changes may occur.**
 
-Tools for transforming heterogeneous sleep measurement data to a unified format.
+A standardized format for polysomnography recordings.
 
 ## Related tools
 
