@@ -99,11 +99,13 @@ class SubjectMetadata(BaseModel, extra='forbid'):
     
 
 class ArrayAttributes(BaseModel, extra='forbid'):
+    # TODO: Should we add fields for the measurement setup? E.g. sensor/amplifier make and model, bitrate, etc...?
     name: str
     start_ts: NaiveDatetime
     sampling_rate: Optional[float] = None
     sampling_interval: Optional[float] = None
     unit: Optional[str] = None
+    # TODO: Is this needed anymore?
     value_map: Optional[dict[int, str | int]] = None
 
     @model_validator(mode='after')

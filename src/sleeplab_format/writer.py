@@ -77,20 +77,6 @@ def write_annotations(
             pd.DataFrame(ann_list).to_parquet(pq_path)
 
 
-
-# def write_study_logs(subject: Subject, subject_path: Path, format: str = 'json') -> None:
-#     if format == 'json':
-#         json_path = subject_path / 'study_logs.json'
-#         json_path.write_text(
-#             subject.study_logs.model_dump_json(indent=JSON_INDENT)
-#         )
-#     else:
-#         # Write logs in parquet
-#         log_path = subject_path / 'study_logs.parquet'
-#         log_dict = subject.study_logs.model_dump().pop('logs')
-#         pd.DataFrame(log_dict).to_parquet(log_path)
-
-
 def write_subject(
         subject: Subject,
         subject_path: Path,
@@ -102,9 +88,6 @@ def write_subject(
 
     if subject.annotations is not None:
         write_annotations(subject, subject_path, format=annotation_format)
-
-    # if subject.study_logs is not None:
-    #     write_study_logs(subject, subject_path, format=annotation_format)
 
 
 def write_series(

@@ -29,6 +29,7 @@ def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
             val_path = p / 'data.npy'
             values_func = lazy_memmap_array(val_path)
 
+            assert p.name == attributes.name
             sarrs[p.name] = SampleArray(
                 attributes=attributes, values_func=values_func)
     return sarrs
