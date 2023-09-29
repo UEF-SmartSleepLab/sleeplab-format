@@ -30,18 +30,20 @@ class Sex(str, Enum):
 
 
 class AASMSleepStage(str, Enum):
-    WAKE = 'WAKE'
+    W = 'W'
     N1 = 'N1'
     N2 = 'N2'
     N3 = 'N3'
-    REM = 'REM'
+    R = 'R'
+
+    # These are not part of the AASM v2.6 definition, but still commonly used
     UNSURE = 'UNSURE'
     UNSCORED = 'UNSCORED'
     ARTIFACT = 'ARTIFACT'
 
 
 class AASMEvent(str, Enum):
-    """Enum for events scored according to the AASM manual v2.4."""
+    """Enum for events scored according to the AASM manual v2.6."""
     # A generic class for artifacts
     ARTIFACT = 'ARTIFACT'
 
@@ -99,13 +101,17 @@ class SubjectMetadata(BaseModel, extra='forbid'):
     
 
 class ArrayAttributes(BaseModel, extra='forbid'):
-    # TODO: Should we add fields for the measurement setup? E.g. sensor/amplifier make and model, bitrate, etc...?
     name: str
     start_ts: NaiveDatetime
     sampling_rate: Optional[float] = None
     sampling_interval: Optional[float] = None
     unit: Optional[str] = None
-    # TODO: Is this needed anymore?
+
+    amplifier_info: Optional[str] = None
+    sensor_info: Optional[str] = None
+
+    # An optional mapping from the array values to some other values,
+    # e.g.  {0: 'off', 1: 'on'}
     value_map: Optional[dict[int, str | int]] = None
 
     @model_validator(mode='after')

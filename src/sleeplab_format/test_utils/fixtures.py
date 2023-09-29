@@ -84,7 +84,7 @@ def hypnogram():
             'duration': 30.0,
         },
         {
-            'name': 'WAKE',
+            'name': 'W',
             'start_ts': '2018-01-01T23:10:34',
             'start_sec': 30.0,
             'duration': 30.0
