@@ -3,6 +3,8 @@ import subprocess
 from sleeplab_format import reader, writer
 from pathlib import Path
 
+from sleeplab_format.models import Dataset
+
 
 def _assert_dirs_equal(dir1, dir2):
     p = subprocess.run(['diff', '-r', dir1, dir2])
@@ -38,35 +40,38 @@ def _assert_datasets_equal(ds1, ds2):
                 assert (arr1.values == arr2.values).all()
 
 
-def test_read_dataset(dataset):
+def test_read_dataset(dataset: Dataset):
     tests_ds_dir = Path(__file__).parent / 'datasets' / 'dataset1'
     ds_read = reader.read_dataset(tests_ds_dir)
 
     _assert_datasets_equal(dataset, ds_read)
 
 
-def test_read_ds_specify_series(dataset):
+def test_read_ds_specify_series(dataset: Dataset):
     tests_ds_dir = Path(__file__).parent / 'datasets' / 'dataset1'
     ds_read = reader.read_dataset(tests_ds_dir, series_names=['series1'])
 
     _assert_datasets_equal(dataset, ds_read)
 
 
-def test_write_read(dataset, tmp_path):
+def test_write_read(dataset: Dataset, tmp_path: Path):
     ds_dir = tmp_path / 'datasets'
     writer.write_dataset(dataset, ds_dir)
     ds_read = reader.read_dataset(ds_dir / dataset.name)
     _assert_datasets_equal(dataset, ds_read)
 
 
-def test_write_read_parquet(dataset, tmp_path):
+def test_write_read_parquet(dataset: Dataset, tmp_path: Path):
     ds_dir = tmp_path / 'datasets'
-    writer.write_dataset(dataset, ds_dir, annotation_format='parquet')
+    writer.write_dataset(dataset, ds_dir,
+                         annotation_format='parquet',
+                         array_format='parquet')
+
     ds_read = reader.read_dataset(ds_dir / dataset.name)
     _assert_datasets_equal(dataset, ds_read)
 
 
-def test_read_write(tmp_path):
+def test_read_write(tmp_path: Path):
     tests_ds_dir = Path(__file__).parent / 'datasets'
     ds_read = reader.read_dataset(tests_ds_dir / 'dataset1')
 

@@ -215,12 +215,3 @@ class Dataset(BaseModel, extra='forbid'):
     name: str
     version: str = SLEEPLAB_FORMAT_VERSION
     series: Optional[dict[str, Series]] = None
-
-
-def lazy_memmap_array(fpath):
-    """Return a function that will load a memmapped numpy array when called."""
-    def inner():
-        return np.load(fpath, mmap_mode='r', allow_pickle=False)
-
-    return inner
-

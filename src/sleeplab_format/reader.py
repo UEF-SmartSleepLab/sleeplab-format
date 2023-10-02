@@ -5,6 +5,7 @@ The data will be validated while parsing.
 import json
 import logging
 import pandas as pd
+import pyarrow.parquet as pq
 
 from sleeplab_format.models import *
 from pathlib import Path
@@ -26,8 +27,15 @@ def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
                 raw_data = f.read()
                 attributes = ArrayAttributes.model_validate_json(raw_data)
 
-            val_path = p / 'data.npy'
-            values_func = lazy_memmap_array(val_path)
+            if (p / 'data.npy').exists():
+                # Return a function that returns a memmapped numpy array
+                values_func = lambda _p=p / 'data.npy': np.load(
+                    _p, mmap_mode='r', allow_pickle=False)
+            elif (p / 'data.parquet').exists():
+                values_func = lambda _p=p / 'data.parquet': pq.read_table(
+                    _p)['data'].to_numpy()
+            else:
+                raise FileNotFoundError(f'No data.npy or data.parquet in {p}')
 
             assert p.name == attributes.name
             sarrs[p.name] = SampleArray(

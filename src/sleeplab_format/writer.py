@@ -7,6 +7,8 @@ import json
 import logging
 import numpy as np
 import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 from sleeplab_format.models import *
 from sleeplab_format.reader import (
@@ -34,7 +36,8 @@ def write_subject_metadata(
 
 def write_sample_arrays(
         subject: Subject,
-        subject_path: Path) -> None:
+        subject_path: Path,
+        format: str = 'numpy') -> None:
     for name, sarr in subject.sample_arrays.items():
         assert name == sarr.attributes.name
         sarr_path = subject_path / f'{sarr.attributes.name}'
@@ -45,9 +48,21 @@ def write_sample_arrays(
         attr_path.write_text(
             sarr.attributes.model_dump_json(indent=JSON_INDENT, exclude_unset=True))
 
-        # Write the array
-        arr_fname = 'data.npy'
-        np.save(sarr_path / arr_fname, sarr.values_func(), allow_pickle=False)
+        arr = sarr.values_func()
+        if format == 'numpy':
+            # Write the array
+            arr_fname = 'data.npy'
+            np.save(sarr_path / arr_fname, arr, allow_pickle=False)
+        elif format == 'parquet':
+            arr_fname = 'data.parquet'
+
+            # Utilize Arrow to write the data to Parquet file
+            arrow_table = pa.Table.from_arrays([arr], names=['data'])
+
+            # Parquet uses Snappy as compression algorithm by default
+            pq.write_table(arrow_table, sarr_path / arr_fname)
+        else:
+            raise AttributeError(f'Unsupported sample array format: {format}')
 
 
 def write_annotations(
@@ -80,11 +95,12 @@ def write_annotations(
 def write_subject(
         subject: Subject,
         subject_path: Path,
-        annotation_format: str = 'json') -> None:
+        annotation_format: str = 'json',
+        array_format: str = 'numpy') -> None:
     subject_path.mkdir(exist_ok=True)
     write_subject_metadata(subject, subject_path)
     
-    write_sample_arrays(subject, subject_path)
+    write_sample_arrays(subject, subject_path, format=array_format)
 
     if subject.annotations is not None:
         write_annotations(subject, subject_path, format=annotation_format)
@@ -93,11 +109,16 @@ def write_subject(
 def write_series(
         series: Series,
         series_path: Path,
-        annotation_format: str = 'json') -> None:
+        annotation_format: str = 'json',
+        array_format: str = 'numpy') -> None:
     for sid, subject in series.subjects.items():
         logger.info(f'Writing subject ID {sid}...')
         subject_path = series_path / subject.metadata.subject_id
-        write_subject(subject, subject_path, annotation_format=annotation_format)
+        write_subject(
+            subject,
+            subject_path,
+            annotation_format=annotation_format,
+            array_format=array_format)
 
 
 def write_dataset_metadata(dataset: Dataset, dataset_path: Path) -> None:
@@ -107,8 +128,10 @@ def write_dataset_metadata(dataset: Dataset, dataset_path: Path) -> None:
 def write_dataset(
         dataset: Dataset,
         basedir: str,
-        annotation_format: str = 'json') -> None:
+        annotation_format: str = 'json',
+        array_format: str = 'numpy') -> None:
     assert annotation_format in ['json', 'parquet']
+    assert array_format in ['numpy', 'parquet']
 
     # Create the folder
     dataset_path = Path(basedir) / dataset.name
@@ -127,4 +150,8 @@ def write_dataset(
         series_path = dataset_path / series.name
         series_path.mkdir(exist_ok=True)
 
-        write_series(series, series_path, annotation_format=annotation_format)
+        write_series(
+            series,
+            series_path,
+            annotation_format=annotation_format,
+            array_format=array_format)
