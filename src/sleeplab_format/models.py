@@ -180,23 +180,23 @@ class BaseAnnotations(BaseModel):
 
 
 class Annotations(BaseAnnotations):
-    type: Literal['annotations']
+    type: Literal['annotations'] = 'annotations'
     annotations: list[Annotation[str]]
 
 
 class Hypnogram(BaseAnnotations):
     """A hypnogram is Annotations consisting of sleep stages."""
-    type: Literal['hypnogram']
+    type: Literal['hypnogram'] = 'hypnogram'
     annotations: list[Annotation[AASMSleepStage]]
 
 
 class AASMEvents(BaseAnnotations):
-    type: Literal['aasmevents']
+    type: Literal['aasmevents'] = 'aasmevents'
     annotations: list[Annotation[AASMEvent]]
 
 
 class Logs(BaseAnnotations):
-    type: Literal['logs']
+    type: Literal['logs'] = 'logs'
     annotations: list[Annotation[str]]
 
 
