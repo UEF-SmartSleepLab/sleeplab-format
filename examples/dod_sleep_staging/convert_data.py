@@ -19,19 +19,19 @@ logger = logging.getLogger(__name__)
 def read_hypnogram(h5: h5py.File, start_ts: dt, epoch_sec: float = 30.0) -> slf.models.Hypnogram:
     """Read the hypnogram from .h5 file and parse to sleeplab format."""
     stage_map = {
-        -1: slf.models.SleepStage.UNSCORED,
-        0: slf.models.SleepStage.WAKE,
-        1: slf.models.SleepStage.N1,
-        2: slf.models.SleepStage.N2,
-        3: slf.models.SleepStage.N3,
-        4: slf.models.SleepStage.REM
+        -1: slf.models.AASMSleepStage.UNSCORED,
+        0: slf.models.AASMSleepStage.W,
+        1: slf.models.AASMSleepStage.N1,
+        2: slf.models.AASMSleepStage.N2,
+        3: slf.models.AASMSleepStage.N3,
+        4: slf.models.AASMSleepStage.R
     }
     h5_hg = h5['hypnogram'][:]
     annotations = []
 
     for i, h5_stage in enumerate(h5_hg):
         start_delta = i * timedelta(seconds=epoch_sec)
-        stage = slf.models.SleepStageAnnotation(
+        stage = slf.models.Annotation[slf.models.AASMSleepStage](
             name=stage_map[h5_stage],
             start_ts=start_ts + start_delta,
             start_sec=float(start_delta.seconds),
@@ -115,7 +115,7 @@ def read_subject(h5_path: Path, tz: str) -> slf.models.Subject:
     return slf.models.Subject(
         metadata=metadata,
         sample_arrays=sample_arrays,
-        annotations={'hypnogram': hg}
+        annotations={f'{hg.scorer}_{hg.type}': hg}
     )
 
 
@@ -153,8 +153,9 @@ def convert_data(h5_dir: Path, slf_dir: Path) -> None:
     dataset = read_to_slf(h5_dir)
 
     logger.info(f'Writing the dataset to {slf_dir}')
-    # The format for annotation files can be 'json' or 'parquet'
-    slf.writer.write_dataset(dataset, slf_dir, annotation_format='json')
+    # The format for annotation files can be 'json' or 'parquet'.
+    # array_format can be 'numpy' or 'parquet'. Parquet files will be smaller due to compression.
+    slf.writer.write_dataset(dataset, slf_dir, annotation_format='json', array_format='parquet')
 
 
 def create_parser():

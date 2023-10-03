@@ -30,7 +30,7 @@ def write_subject_metadata(
         subject_path: Path) -> None:
     metadata_path = subject_path / 'metadata.json'
     metadata_path.write_text(
-        subject.metadata.model_dump_json(indent=JSON_INDENT, exclude_unset=True),
+        subject.metadata.model_dump_json(indent=JSON_INDENT, exclude_none=True),
     )
 
 
@@ -46,7 +46,7 @@ def write_sample_arrays(
         # Write the attributes
         attr_path = sarr_path / 'attributes.json'
         attr_path.write_text(
-            sarr.attributes.model_dump_json(indent=JSON_INDENT, exclude_unset=True))
+            sarr.attributes.model_dump_json(indent=JSON_INDENT, exclude_none=True))
 
         arr = sarr.values_func()
         if format == 'numpy':
@@ -119,10 +119,6 @@ def write_series(
             subject_path,
             annotation_format=annotation_format,
             array_format=array_format)
-
-
-def write_dataset_metadata(dataset: Dataset, dataset_path: Path) -> None:
-    pass
 
 
 def write_dataset(

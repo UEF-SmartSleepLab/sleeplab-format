@@ -1,9 +1,13 @@
 # The configuration for sleeplab-extractor to extract and preprocess a subset
 # of signals for automatic sleep staging.
+new_dataset_name: "dod_extracted"
 
 # Currently, sleeplab-tf-dataset only supports annotations in parquet format.
 # Note that the source sleeplab formatted dataset can be in json format.
 annotation_format: "parquet"
+
+# Signals should be extracted to uncompressed numpy arrays.
+array_format: "numpy"
 
 # A separate config must be defined for each series to be extracted.
 series_configs:
@@ -15,7 +19,7 @@ series_configs:
     filter_conds:
       - name: "tst_less_than_1h"
         method: "sleeplab_extractor.preprocess.filter_by_tst"
-        kwargs: {"min_tst_sec": 3600.0}
+        kwargs: {"min_tst_sec": 3600.0, "hypnogram_key": "manual_consensus_hypnogram"}
 
     array_configs:
 
@@ -74,7 +78,7 @@ series_configs:
     filter_conds:
       - name: "tst_less_than_1h"
         method: "sleeplab_extractor.preprocess.filter_by_tst"
-        kwargs: {"min_tst_sec": 3600.0}
+        kwargs: {"min_tst_sec": 3600.0, "hypnogram_key": "manual_consensus_hypnogram"}
 
     array_configs:
 

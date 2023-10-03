@@ -6,6 +6,12 @@ This is an end-to-end example of how to convert data from another format to slee
 
  **The code is developed and tested with Linux and Python 3.10**. Windows users can install [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install) to run this example (and to use Linux for development in general).
 
+If you do not yet have a copy of this example, you can clone the repository to current working directory and go to the example folder:
+```console
+git clone https://github.com/UEF-SmartSleepLab/sleeplab-format.git
+cd sleeplab-format/examples/dod_sleep_staging
+```
+
 ## Install dependencies
 
 ```bash
@@ -37,7 +43,7 @@ All configurations for the extractor are in `sleeplab_extractor_config.yml`.
 
 To perform the extraction, run in this directory:
 ```bash
-sleeplab-extract --src_dir /tmp/slf/dod --dst_dir /tmp/slf/dod_extracted --config_path ./sleeplab_extractor_config.yml
+sleeplab-extract --src_dir /tmp/slf/dod --dst_dir /tmp/slf --config_path ./sleeplab_extractor_config.yml
 ```
 
 ## Train a sleep staging model with the data
