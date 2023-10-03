@@ -76,7 +76,7 @@ def write_annotations(
         if format == 'json':
             json_path = subject_path / f'{k}{JSON_ANNOTATION_SUFFIX}'
             json_path.write_text(
-                v.model_dump_json(exclude_unset=True, indent=JSON_INDENT)
+                v.model_dump_json(exclude_none=True, indent=JSON_INDENT)
             )
         else:
             # Write the actual annotations in parquet, metadata in json
@@ -141,7 +141,7 @@ def write_dataset(
     # Write the dataset metadata
     metadata_path = dataset_path / 'metadata.json'
     metadata_path.write_text(
-        dataset.model_dump_json(exclude={'series'}, exclude_unset=True, indent=JSON_INDENT))
+        dataset.model_dump_json(exclude={'series'}, indent=JSON_INDENT))
 
     # Write the series
     for name, series in dataset.series.items():

@@ -158,7 +158,6 @@ def series(subjects):
 def dataset(series):
     dataset = Dataset(
         name='dataset1',
-        version=SLEEPLAB_FORMAT_VERSION,
         series=series
     )
     return dataset
