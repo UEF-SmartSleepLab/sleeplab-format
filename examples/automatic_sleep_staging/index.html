@@ -9,20 +9,22 @@
       
       
       
+        <link rel="prev" href="../../contributing/">
       
-        <link rel="next" href="contributing/">
+      
+        <link rel="next" href="../edf_conversion/">
       
       
-      <link rel="icon" href="smartsleeplab_logo.png">
+      <link rel="icon" href="../../smartsleeplab_logo.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.3">
     
     
       
-        <title>Getting started - Sleeplab-format</title>
+        <title>Automatic sleep staging - Sleeplab-format</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.79e020e9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.79e020e9.min.css">
       
       
 
@@ -41,9 +43,9 @@
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -65,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sleeplab-format-v030" class="md-skip">
+        <a href="#sleep-staging-using-dreem-open-datasets" class="md-skip">
           Skip to content
         </a>
       
@@ -79,9 +81,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Sleeplab-format" class="md-header__button md-logo" aria-label="Sleeplab-format" data-md-component="logo">
+    <a href="../.." title="Sleeplab-format" class="md-header__button md-logo" aria-label="Sleeplab-format" data-md-component="logo">
       
-  <img src="smartsleeplab_logo.png" alt="logo">
+  <img src="../../smartsleeplab_logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -98,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting started
+              Automatic sleep staging
             
           </span>
         </div>
@@ -174,13 +176,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="." class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
           
   
   Home
@@ -194,11 +194,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="examples/automatic_sleep_staging/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   Examples
@@ -216,7 +218,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="api/reader/" class="md-tabs__link">
+        <a href="../../api/reader/" class="md-tabs__link">
           
   
   API Documentation
@@ -249,9 +251,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Sleeplab-format" class="md-nav__button md-logo" aria-label="Sleeplab-format" data-md-component="logo">
+    <a href="../.." title="Sleeplab-format" class="md-nav__button md-logo" aria-label="Sleeplab-format" data-md-component="logo">
       
-  <img src="smartsleeplab_logo.png" alt="logo">
+  <img src="../../smartsleeplab_logo.png" alt="logo">
 
     </a>
     Sleeplab-format
@@ -275,8 +277,6 @@
       
   
   
-    
-  
   
     
     
@@ -286,12 +286,12 @@
       
       
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
         
           
           <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
@@ -305,7 +305,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Home
@@ -316,29 +316,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Getting started
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -347,33 +327,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    Installation
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -385,7 +338,7 @@
   
   
     <li class="md-nav__item">
-      <a href="contributing/" class="md-nav__link">
+      <a href="../../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -410,6 +363,8 @@
       
   
   
+    
+  
   
     
     
@@ -419,12 +374,12 @@
       
       
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -438,7 +393,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -449,9 +404,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="examples/automatic_sleep_staging/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Automatic sleep staging
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -460,6 +435,61 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-dependencies" class="md-nav__link">
+    Install dependencies
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convert-data-to-sleeplab-format" class="md-nav__link">
+    Convert data to sleeplab format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract-and-preprocess-a-subset-of-the-signals" class="md-nav__link">
+    Extract and preprocess a subset of the signals
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#train-a-sleep-staging-model-with-the-data" class="md-nav__link">
+    Train a sleep staging model with the data
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -471,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/edf_conversion/" class="md-nav__link">
+      <a href="../edf_conversion/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -537,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/reader/" class="md-nav__link">
+      <a href="../../api/reader/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -557,7 +587,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/writer/" class="md-nav__link">
+      <a href="../../api/writer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -577,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/models/" class="md-nav__link">
+      <a href="../../api/models/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -625,8 +655,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    Installation
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-dependencies" class="md-nav__link">
+    Install dependencies
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convert-data-to-sleeplab-format" class="md-nav__link">
+    Convert data to sleeplab format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extract-and-preprocess-a-subset-of-the-signals" class="md-nav__link">
+    Extract and preprocess a subset of the signals
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#train-a-sleep-staging-model-with-the-data" class="md-nav__link">
+    Train a sleep staging model with the data
   </a>
   
 </li>
@@ -649,11 +707,38 @@
   
 
 
-<h1 id="sleeplab-format-v030">Sleeplab-format v0.3.0</h1>
-<p>A standardized format for polysomnography recordings.</p>
-<h2 id="installation">Installation</h2>
-<pre><code class="language-console">pip install sleeplab-format
+<h1 id="sleep-staging-using-dreem-open-datasets">Sleep staging using Dreem Open Datasets</h1>
+<p>This is an end-to-end example of how to convert data from another format to sleeplab format, how to preprocess the data using sleeplab-extractor, and how to train a deep learning model utilizing sleeplab-tf-dataset. The code is <a href="https://github.com/UEF-SmartSleepLab/sleeplab-format/tree/main/examples/dod_sleep_staging">available on Github</a>. This example uses data from Dreem Open Datasets (DOD) since the DOD is well documented and open access (<a href="https://doi.org/10.1109/TNSRE.2020.3011181">https://doi.org/10.1109/TNSRE.2020.3011181</a>).</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p><strong>The code is developed and tested with Linux and Python 3.10</strong>. Windows users can install <a href="https://learn.microsoft.com/en-us/windows/wsl/install">Windows Subsystem for Linux</a> to run this example (and to use Linux for development in general).</p>
+<p>If you do not yet have a copy of this example, you can clone the repository to current working directory and go to the example folder:</p>
+<pre><code class="language-console">git clone https://github.com/UEF-SmartSleepLab/sleeplab-format.git
+cd sleeplab-format/examples/dod_sleep_staging
 </code></pre>
+<h2 id="install-dependencies">Install dependencies</h2>
+<pre><code class="language-bash">pip install -r requirements.txt
+</code></pre>
+<h2 id="convert-data-to-sleeplab-format">Convert data to sleeplab format</h2>
+<p>NOTE: This will download and convert the whole dataset with the original 250Hz sampling rate. The h5 files take 57 GB on disk, and the converted slf dataset takes 30 GB.</p>
+<p>The examples below use <code>/tmp</code> as the base directory. Substitute it with another location if you want to persist the data and results.</p>
+<p>First, download the datasets</p>
+<pre><code class="language-bash">mkdir /tmp/dod
+python download_data.py --dst-dir /tmp/dod
+</code></pre>
+<p>Then, run the conversion</p>
+<pre><code class="language-bash">python convert_data.py --src-dir /tmp/dod --dst-dir /tmp/slf
+</code></pre>
+<h2 id="extract-and-preprocess-a-subset-of-the-signals">Extract and preprocess a subset of the signals</h2>
+<p>Use <a href="https://github.com/UEF-SmartSleepLab/sleeplab-extractor">sleeplab-extractor</a> to extract a single EEG channel, EOG channel, and EMG channel. Resample to 64Hz, highpass filter, and normalize the signals.</p>
+<p>All configurations for the extractor are in <code>sleeplab_extractor_config.yml</code>.</p>
+<p>To perform the extraction, run in this directory:</p>
+<pre><code class="language-bash">sleeplab-extract --src_dir /tmp/slf/dod --dst_dir /tmp/slf --config_path ./sleeplab_extractor_config.yml
+</code></pre>
+<h2 id="train-a-sleep-staging-model-with-the-data">Train a sleep staging model with the data</h2>
+<p>Now, use the preprocessed 64Hz data for automatic sleep staging. The model and training loop are defined in <code>train.py</code>.</p>
+<pre><code class="language-bash">python train.py --model-dir /tmp/dod_models --epochs 100
+</code></pre>
+<p>This should achieve 75-85% validation accuracy, and 70-80% test accuracy. Since the dataset is relatively small (50, 11, and 20 recordings for training, validation, and test sets), the performance fluctuates quite much between the runs. No hyperparameter tuning has been performed, default values are used everywhere.</p>
 
 
 
@@ -692,10 +777,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs"], "search": "assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.6eac0284.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6eac0284.min.js"></script>
       
     
   </body>
