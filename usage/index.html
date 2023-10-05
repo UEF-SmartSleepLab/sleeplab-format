@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../usage/">
+        <link rel="prev" href="..">
       
       
-        <link rel="next" href="../examples/automatic_sleep_staging/">
+        <link rel="next" href="../contributing/">
       
       
       <link rel="icon" href="../smartsleeplab_logo.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Contributing - Sleeplab-format</title>
+        <title>Concepts and usage - Sleeplab-format</title>
       
     
     
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#contributing" class="md-skip">
+        <a href="#concepts-and-usage" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Contributing
+              Concepts and usage
             
           </span>
         </div>
@@ -338,26 +338,6 @@
                 
   
   
-  
-    <li class="md-nav__item">
-      <a href="../usage/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Concepts and usage
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -369,18 +349,28 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
   
   <span class="md-ellipsis">
-    Contributing
+    Concepts and usage
   </span>
   
 
-          <span class="md-nav__icon md-icon"></span>
-        </label>
+      </a>
       
-      <a href="./" class="md-nav__link md-nav__link--active">
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -389,54 +379,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#install-from-cloned-repository" class="md-nav__link">
-    Install from cloned repository
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
-    Running tests
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documenting-the-source-code" class="md-nav__link">
-    Documenting the source code
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generating-the-documentation" class="md-nav__link">
-    Generating the documentation
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -661,42 +603,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#install-from-cloned-repository" class="md-nav__link">
-    Install from cloned repository
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
-    Running tests
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documenting-the-source-code" class="md-nav__link">
-    Documenting the source code
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generating-the-documentation" class="md-nav__link">
-    Generating the documentation
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -713,52 +619,8 @@
   
 
 
-<h1 id="contributing">Contributing</h1>
-<p>We follow <a href="https://docs.github.com/en/get-started/quickstart/github-flow">Github flow</a> in the development. </p>
-<p>The basic procedure to contribute code to the project is:</p>
-<ol>
-<li><a href="#install-from-cloned-repository">Install from cloned repository</a></li>
-<li>Create your own branch and implement the changes (and tests, preferably)</li>
-<li><a href="#running-tests">Make sure the tests pass</a></li>
-<li>Create a pull request on Github</li>
-<li>Another contributor reviews the pull request</li>
-<li>Fix review comments if any</li>
-<li>Reviewer merges the pull request</li>
-</ol>
-<h2 id="install-from-cloned-repository">Install from cloned repository</h2>
-<p>Clone repository to your local files:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:UEF-SmartSleepLab/sleeplab-format.git
-</span></code></pre></div></p>
-<p>This project uses <a href="https://hatch.pypa.io/latest/">Hatch</a> for project management. First, <a href="https://hatch.pypa.io/latest/install/">install hatch</a>. You will also need a recent version of pip.</p>
-<p>Then, go to the root of the cloned repository and create an environment for it:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>hatch<span class="w"> </span>env<span class="w"> </span>create
-</span></code></pre></div></p>
-<p>After that, you can enter the environment by:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>hatch<span class="w"> </span>shell
-</span></code></pre></div></p>
-<p>You can confirm that the project has been installed by:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>show<span class="w"> </span>sleeplab-format
-</span></code></pre></div></p>
-<h2 id="running-tests">Running tests</h2>
-<p>This project uses <code>pytest</code> for testing. To run the tests after cloning and installing, go to the root of the cloned repository and run:
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pytest
-</span></code></pre></div></p>
-<h2 id="documenting-the-source-code">Documenting the source code</h2>
-<p>The source code should be documented using <a href="https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings">Google style docstrings</a>.</p>
-<h2 id="generating-the-documentation">Generating the documentation</h2>
-<p>This documentation is created using <a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a> and <a href="https://mkdocstrings.github.io/">mkdocstrings</a>. The documentation is published using <a href="https://pages.github.com/">Github Pages</a>. There are utility scripts defined in <code>pyproject.toml</code> to build and publish the documentation.</p>
-<p>When working on documentation, use hatch environment <code>docs</code>:
-<div class="language-console highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="go">hatch -e docs shell</span>
-</span></code></pre></div></p>
-<p>Build the documentation:
-<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="go">hatch run docs:build</span>
-</span></code></pre></div></p>
-<p>Serve the documentation on local machine for inspection:
-<div class="language-console highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="go">hatch run docs:serve</span>
-</span></code></pre></div></p>
-<p>Publish the documentation:
-<div class="language-console highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="go">hatch run docs:publish</span>
-</span></code></pre></div></p>
+<h1 id="concepts-and-usage">Concepts and usage</h1>
+<p>TODO</p>
 
 
 

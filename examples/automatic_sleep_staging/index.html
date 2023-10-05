@@ -338,6 +338,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../../usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concepts and usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../contributing/" class="md-nav__link">
         
   
@@ -711,33 +731,33 @@
 <p>This is an end-to-end example of how to convert data from another format to sleeplab format, how to preprocess the data using sleeplab-extractor, and how to train a deep learning model utilizing sleeplab-tf-dataset. The code is <a href="https://github.com/UEF-SmartSleepLab/sleeplab-format/tree/main/examples/dod_sleep_staging">available on Github</a>. This example uses data from Dreem Open Datasets (DOD) since the DOD is well documented and open access (<a href="https://doi.org/10.1109/TNSRE.2020.3011181">https://doi.org/10.1109/TNSRE.2020.3011181</a>).</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <p><strong>The code is developed and tested with Linux and Python 3.10</strong>. Windows users can install <a href="https://learn.microsoft.com/en-us/windows/wsl/install">Windows Subsystem for Linux</a> to run this example (and to use Linux for development in general).</p>
-<p>If you do not yet have a copy of this example, you can clone the repository to current working directory and go to the example folder:</p>
-<pre><code class="language-console">git clone https://github.com/UEF-SmartSleepLab/sleeplab-format.git
-cd sleeplab-format/examples/dod_sleep_staging
-</code></pre>
+<p>If you do not yet have a copy of this example, you can clone the repository to current working directory and go to the example folder:
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">git clone https://github.com/UEF-SmartSleepLab/sleeplab-format.git</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">cd sleeplab-format/examples/dod_sleep_staging</span>
+</span></code></pre></div></p>
 <h2 id="install-dependencies">Install dependencies</h2>
-<pre><code class="language-bash">pip install -r requirements.txt
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</span></code></pre></div>
 <h2 id="convert-data-to-sleeplab-format">Convert data to sleeplab format</h2>
 <p>NOTE: This will download and convert the whole dataset with the original 250Hz sampling rate. The h5 files take 57 GB on disk, and the converted slf dataset takes 30 GB.</p>
 <p>The examples below use <code>/tmp</code> as the base directory. Substitute it with another location if you want to persist the data and results.</p>
-<p>First, download the datasets</p>
-<pre><code class="language-bash">mkdir /tmp/dod
-python download_data.py --dst-dir /tmp/dod
-</code></pre>
-<p>Then, run the conversion</p>
-<pre><code class="language-bash">python convert_data.py --src-dir /tmp/dod --dst-dir /tmp/slf
-</code></pre>
+<p>First, download the datasets
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>mkdir<span class="w"> </span>/tmp/dod
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>python<span class="w"> </span>download_data.py<span class="w"> </span>--dst-dir<span class="w"> </span>/tmp/dod
+</span></code></pre></div></p>
+<p>Then, run the conversion
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>convert_data.py<span class="w"> </span>--src-dir<span class="w"> </span>/tmp/dod<span class="w"> </span>--dst-dir<span class="w"> </span>/tmp/slf
+</span></code></pre></div></p>
 <h2 id="extract-and-preprocess-a-subset-of-the-signals">Extract and preprocess a subset of the signals</h2>
 <p>Use <a href="https://github.com/UEF-SmartSleepLab/sleeplab-extractor">sleeplab-extractor</a> to extract a single EEG channel, EOG channel, and EMG channel. Resample to 64Hz, highpass filter, and normalize the signals.</p>
 <p>All configurations for the extractor are in <code>sleeplab_extractor_config.yml</code>.</p>
-<p>To perform the extraction, run in this directory:</p>
-<pre><code class="language-bash">sleeplab-extract --src_dir /tmp/slf/dod --dst_dir /tmp/slf --config_path ./sleeplab_extractor_config.yml
-</code></pre>
+<p>To perform the extraction, run in this directory:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sleeplab-extract<span class="w"> </span>--src_dir<span class="w"> </span>/tmp/slf/dod<span class="w"> </span>--dst_dir<span class="w"> </span>/tmp/slf<span class="w"> </span>--config_path<span class="w"> </span>./sleeplab_extractor_config.yml
+</span></code></pre></div></p>
 <h2 id="train-a-sleep-staging-model-with-the-data">Train a sleep staging model with the data</h2>
 <p>Now, use the preprocessed 64Hz data for automatic sleep staging. The model and training loop are defined in <code>train.py</code>.</p>
-<pre><code class="language-bash">python train.py --model-dir /tmp/dod_models --epochs 100
-</code></pre>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python<span class="w"> </span>train.py<span class="w"> </span>--model-dir<span class="w"> </span>/tmp/dod_models<span class="w"> </span>--epochs<span class="w"> </span><span class="m">100</span>
+</span></code></pre></div>
 <p>This should achieve 75-85% validation accuracy, and 70-80% test accuracy. Since the dataset is relatively small (50, 11, and 20 recordings for training, validation, and test sets), the performance fluctuates quite much between the runs. No hyperparameter tuning has been performed, default values are used everywhere.</p>
 
 
