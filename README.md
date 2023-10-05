@@ -5,6 +5,10 @@
 
 A standardized format for polysomnography recordings.
 
+## Documentation
+
+See [full documentation](https://uef-smartsleeplab.github.io/sleeplab-format/) for details.
+
 ## Related tools
 
 [sleeplab-converters](https://github.com/UEF-SmartSleepLab/sleeplab-converters) for converting other formats exported from PSG software to sleeplab format.
@@ -21,8 +25,23 @@ pip install sleeplab-format
 
 ## Usage
 
+```python
+import sleeplab_format as slf
+from pathlib import Path
+
+DS_DIR = Path('/path/to/dataset')
+ds = slf.reader.read_dataset(DATASET_DIR)
+
+# TODO: Example of how to access data
+
+# ...Do some processing and modify the dataset
+
+MODIFIED_DS_DIR = Path('/path/to/modified_dataset')
+slf.writer.write_dataset(ds, MODIFIED_DATASET_DIR)
+```
+
 See [the automatic sleep staging example](examples/dod_sleep_staging/README.md) for a full end-to-end example.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [contributing](docs/contributing.md).

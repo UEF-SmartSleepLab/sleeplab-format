@@ -1,7 +1,7 @@
 """Write validated data into sleeplab format.
 
 The data needs to conform to the types specified in
-dataset_generation.data_types
+`sleeplab_format.models`.
 """
 import json
 import logging

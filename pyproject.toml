@@ -40,6 +40,17 @@ no-cov = "cov --no-cov {args}"
 [[tool.hatch.envs.test.matrix]]
 python = ["39", "310", "311"]
 
+[tool.hatch.envs.docs]
+dependencies = [
+  "mkdocs-material",
+  "mkdocstrings[python]>=0.18"
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build"
+serve = "mkdocs serve"
+publish = "mkdocs gh-deploy --force"
+
 [tool.coverage.run]
 branch = true
 parallel = true

@@ -1,6 +1,4 @@
-"""Read files into sleeplab format.
-
-The data will be validated while parsing.
+"""Read files into sleeplab format. The data will be validated while parsing.
 """
 import json
 import logging
@@ -20,6 +18,14 @@ PARQUET_ANNOTATION_META_SUFFIX = '.a_meta.json'
 
 
 def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
+    """Read all subject's sample arrays.
+
+    Arguments:
+        subject_dir: The subject folder.
+
+    Returns:
+        All sample arrays in a dictionary.
+    """
     sarrs = {}
     for p in subject_dir.iterdir():
         if p.is_dir() and not p.name.startswith('.'):
@@ -44,6 +50,14 @@ def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
 
 
 def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
+    """Read all subject's annotations.
+
+    Arguments:
+        subject_dir: The subject folder.
+
+    Returns:
+        All annotations in a dictionary.
+    """
     annotations = {}
     for p in subject_dir.iterdir():
 
@@ -72,6 +86,15 @@ def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
 def read_subject(
         subject_dir: Path,
         include_annotations: bool = True) -> Subject:
+    """Read a single subject to `sleeplab_format.models.Subject`.
+
+    Arguments:
+        subject_dir: The subject folder.
+        include_annotations: Whether to include the annotations.
+
+    Returns:
+        The resulting subject.
+    """
     with open(subject_dir / 'metadata.json', 'rb') as f:
         raw_data = f.read()
         metadata = SubjectMetadata.model_validate_json(raw_data)
@@ -93,6 +116,15 @@ def read_subject(
 def read_series(
         series_dir: Path,
         include_annotations: bool = True) -> Series:
+    """Read a single series to `sleeplab_format.models.Series`.
+
+    Arguments:
+        series_dir: The series root folder.
+        include_annotations: Whether to include the annotations.
+
+    Returns:
+        The resulting series.
+    """
     return Series(
         name=series_dir.name,
         subjects={subject_dir.name: read_subject(
@@ -106,6 +138,16 @@ def read_dataset(
         ds_dir: Path,
         series_names: list[str] | None = None,
         include_annotations: bool = True) -> Dataset:
+    """Read a dataset stored in sleeplab-format.
+
+    Arguments:
+        ds_dir: The dataset root folder.
+        series_names: The series included in the resulting dataset.
+        include_annotations: Whether to include annotations or only read the sample arrays.
+
+    Returns:
+        The resulting dataset.
+    """
     with open(ds_dir / 'metadata.json', 'r') as f:
         ds_meta = json.load(f)
 
