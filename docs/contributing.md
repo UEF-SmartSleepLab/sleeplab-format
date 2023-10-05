@@ -42,3 +42,31 @@ This project uses `pytest` for testing. To run the tests after cloning and insta
 ```bash
 pytest
 ```
+
+## Documenting the source code
+
+The source code should be documented using [Google style docstrings](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings).
+
+## Generating the documentation
+
+This documentation is created using [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) and [mkdocstrings](https://mkdocstrings.github.io/). The documentation is published using [Github Pages](https://pages.github.com/). There are utility scripts defined in `pyproject.toml` to build and publish the documentation.
+
+When working on documentation, use hatch environment `docs`:
+```console
+hatch -e docs shell
+```
+
+Build the documentation:
+```console
+hatch run docs:build
+```
+
+Serve the documentation on local machine for inspection:
+```console
+hatch run docs:serve
+```
+
+Publish the documentation:
+```console
+hatch run docs:publish
+```

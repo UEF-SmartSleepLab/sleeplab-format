@@ -16,6 +16,7 @@ theme:
 nav:
   - Home:
     - Getting started: index.md
+    - Concepts and usage: usage.md
     - Contributing: contributing.md
   - Examples:
     - Automatic sleep staging: examples/automatic_sleep_staging.md
@@ -32,3 +33,12 @@ plugins:
         paths: [src]
 - search:
     enabled: true
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
