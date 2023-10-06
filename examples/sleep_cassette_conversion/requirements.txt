@@ -1,0 +1,5 @@
+numpy
+pandas
+xlrd
+pyedflib
+sleeplab-format @ git+https://github.com/UEF-SmartSleepLab/sleeplab-format@annotations_v0.3
