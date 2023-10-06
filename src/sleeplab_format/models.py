@@ -30,6 +30,7 @@ class Sex(str, Enum):
 
 
 class AASMSleepStage(str, Enum):
+    """Sleep stages according to the AASM manual v2.6."""
     W = 'W'
     N1 = 'N1'
     N2 = 'N2'
@@ -40,6 +41,23 @@ class AASMSleepStage(str, Enum):
     UNSURE = 'UNSURE'
     UNSCORED = 'UNSCORED'
     ARTIFACT = 'ARTIFACT'
+
+
+class RKSleepStage(str, Enum):
+    """Sleep stages according to the Rechtschaffen and Kales manual.
+
+    Stages 1, 2, 3, and 4 are prefixed with `S`.
+    """
+    W = 'W'
+    S1 = 'S1'
+    S2 = 'S2'
+    S3 = 'S3'
+    S4 = 'S4'
+    R = 'R'
+
+    # TODO: Are these part of the original manual?
+    MOVEMENT = 'MOVEMENT'
+    UNSCORED = 'UNSCORED'
 
 
 class AASMEvent(str, Enum):
@@ -188,6 +206,12 @@ class Hypnogram(BaseAnnotations):
     """A hypnogram is Annotations consisting of sleep stages."""
     type: Literal['hypnogram'] = 'hypnogram'
     annotations: list[Annotation[AASMSleepStage]]
+
+
+class RKHypnogram(BaseAnnotations):
+    """Hypnogram scored with R&K rules."""
+    type: Literal['rkhypnogram'] = 'rkhypnogram'
+    annotations: list[Annotation[RKSleepStage]]
 
 
 class AASMEvents(BaseAnnotations):
