@@ -66,6 +66,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#converting-the-sleep-cassette-dataset-to-sleeplab-format" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -447,6 +452,19 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    EDF conversion
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -457,6 +475,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-the-data" class="md-nav__link">
+    Download the data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convert-to-sleeplab-format" class="md-nav__link">
+    Convert to sleeplab-format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resulting-dataset-sizes" class="md-nav__link">
+    Resulting dataset sizes
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -593,6 +658,44 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    Setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-the-data" class="md-nav__link">
+    Download the data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convert-to-sleeplab-format" class="md-nav__link">
+    Convert to sleeplab-format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resulting-dataset-sizes" class="md-nav__link">
+    Resulting dataset sizes
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -610,9 +713,58 @@
   
 
 
-  <h1>EDF conversion</h1>
-
-<p>TODO</p>
+<h1 id="converting-the-sleep-cassette-dataset-to-sleeplab-format">Converting the Sleep Cassette dataset to sleeplab-format</h1>
+<p>This is an example of how to convert EDF and EDF+ files to sleeplab-format. The example uses the <a href="https://physionet.org/content/sleep-edfx/1.0.0/">Sleep Cassette dataset</a>, which is openly available for download and usage.</p>
+<h2 id="setup">Setup</h2>
+<p>Clone the sleeplab-format repo and <code>cd</code> to the example folder.
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">git clone https://github.com/UEF-SmartSleepLab/sleeplab-format.git</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">cd examples/sleep_edf_conversion</span>
+</span></code></pre></div></p>
+<p>Create environment with Python 3.10, for example with conda:
+<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">conda create -n sleep_edf_conversion python=3.10</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">conda activate sleep_edf_conversion</span>
+</span></code></pre></div></p>
+<p>Install requirements
+<div class="language-console highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="go">pip install -r requirements.txt</span>
+</span></code></pre></div></p>
+<h2 id="download-the-data">Download the data</h2>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="go">wget -r -N -c -np https://physionet.org/files/sleep-edfx/1.0.0/</span>
+</span></code></pre></div>
+<h2 id="convert-to-sleeplab-format">Convert to sleeplab-format</h2>
+<p>The code for conversion is in <code>convert_data.py</code>. The module provides a command line interface, which takes as arguments:
+- --src-dir: The folder containing the original EDF data (<code>SC-subjects.xls</code> Excel and <code>sleep-cassette/</code> folder).
+- --dst-dir: The folder where the sleeplab-format dataset will be saved.
+- --array-format: The save format of the signals; <code>numpy</code> or <code>parquet</code>.
+- --annotation-format: The save format of the annotation files; <code>json</code> or <code>parquet</code>.</p>
+<p>For example, to store the signals as parquet files, and annotations as json files:
+<div class="language-console highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="go">python convert_data.py --src-dir physionet.org/files/sleep-edfx/1.0.0 \</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="go">    --dst-dir /tmp/sleeplab_format --array-format parquet --annotation-format json</span>
+</span></code></pre></div></p>
+<p>The Sleep-Cassette dataset contains 153 PSG recordings, 20h duration each. There are two recordings recorded on consecutive dates for each subject. Detailed information can be found on the <a href="https://physionet.org/content/sleep-edfx/1.0.0/">dataset documentation</a>. The consecutive recordings are stored in separate sleeplab-format series <code>sc-night1</code> and <code>sc-night2</code>. Detailed information on the sleeplab-format data structures can be found in the <a href="https://uef-smartsleeplab.github.io/sleeplab-format/usage/">sleeplab-format documentation</a>.</p>
+<h2 id="resulting-dataset-sizes">Resulting dataset sizes</h2>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th style="text-align: right;">Size (Gb)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Original EDF files</td>
+<td style="text-align: right;">7.42</td>
+</tr>
+<tr>
+<td>SLF, array format <code>numpy</code></td>
+<td style="text-align: right;">14.85</td>
+</tr>
+<tr>
+<td>SLF, array format <code>parquet</code></td>
+<td style="text-align: right;">5.36</td>
+</tr>
+</tbody>
+</table>
+<p>The EDF files stores signals as 16-bit signed ints. In this example, the signals are stored as 32-bit floats in the sleeplab-format, which doubles the dataset size if uncompressed numpy files are used for the signals. However, if the signals are saved in parquet files, the size is reduced significantly from the original EDF files. The reason for this size reduction is currently not known. Parquet uses Snappy compression algorithm, which encodes recurring patterns as (pattern, count) pairs. However, EEG, EOG, and EMG signals are characterized by random fluctuations and noise, which means that a lossless compression algorithm should not be able to compress the data significantly. The size reduction might be related to the AD and EDF conversions, signal filtering, and artefacts.</p>
 
 
 
