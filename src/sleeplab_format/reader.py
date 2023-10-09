@@ -4,6 +4,7 @@ import json
 import logging
 import pandas as pd
 import pyarrow.parquet as pq
+import zarr
 
 from sleeplab_format.models import *
 from pathlib import Path
@@ -40,6 +41,8 @@ def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
             elif (p / 'data.parquet').exists():
                 values_func = lambda _p=p / 'data.parquet': pq.read_table(
                     _p)['data'].to_numpy()
+            elif (p / 'data.zarr').exists():
+                values_func = lambda _p=p / 'data.zarr': zarr.load(_p)
             else:
                 raise FileNotFoundError(f'No data.npy or data.parquet in {p}')
 

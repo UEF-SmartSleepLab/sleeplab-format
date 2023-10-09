@@ -17,6 +17,7 @@ dependencies = [
     "pandas",
     "pyarrow",
     "pydantic>=2.0",
+    "zarr"
 ]
 
 [project.urls]

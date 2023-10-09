@@ -9,7 +9,9 @@ import numpy as np
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
+import zarr
 
+from numcodecs import Blosc
 from sleeplab_format.models import *
 from sleeplab_format.reader import (
     JSON_ANNOTATION_SUFFIX,
@@ -53,6 +55,10 @@ def write_sample_arrays(
             # Write the array
             arr_fname = 'data.npy'
             np.save(sarr_path / arr_fname, arr, allow_pickle=False)
+        elif format == 'zarr':
+            arr_fname = 'data.zarr'
+            compressor = Blosc(cname='zstd', clevel=1, shuffle=Blosc.BITSHUFFLE)
+            zarr.save_array(sarr_path / arr_fname, arr, compressor=compressor)
         elif format == 'parquet':
             arr_fname = 'data.parquet'
 
@@ -127,7 +133,7 @@ def write_dataset(
         annotation_format: str = 'json',
         array_format: str = 'numpy') -> None:
     assert annotation_format in ['json', 'parquet']
-    assert array_format in ['numpy', 'parquet']
+    assert array_format in ['numpy', 'parquet', 'zarr']
 
     # Create the folder
     dataset_path = Path(basedir) / dataset.name

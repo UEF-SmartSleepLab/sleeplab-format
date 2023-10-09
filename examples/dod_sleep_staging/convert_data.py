@@ -147,7 +147,7 @@ def read_to_slf(h5_dir: Path) -> slf.models.Dataset:
     return dataset
 
 
-def convert_data(h5_dir: Path, slf_dir: Path) -> None:
+def convert_data(h5_dir: Path, slf_dir: Path, array_format: str = 'numpy') -> None:
     """Run the conversion from .h5 files to sleeplab format."""
     logger.info(f'Reading data to slf Dataset from {h5_dir}')
     dataset = read_to_slf(h5_dir)
@@ -155,13 +155,14 @@ def convert_data(h5_dir: Path, slf_dir: Path) -> None:
     logger.info(f'Writing the dataset to {slf_dir}')
     # The format for annotation files can be 'json' or 'parquet'.
     # array_format can be 'numpy' or 'parquet'. Parquet files will be smaller due to compression.
-    slf.writer.write_dataset(dataset, slf_dir, annotation_format='json', array_format='parquet')
+    slf.writer.write_dataset(dataset, slf_dir, annotation_format='json', array_format=array_format)
 
 
 def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--src-dir', help='the h5 data dir')
     parser.add_argument('-d', '--dst-dir', help='the directory where the slf dataset is saved')
+    parser.add_argument('--array-format', default='numpy', help='Save format of the arrays; `numpy`, `parquet` or `zarr`')
 
     return parser
 
@@ -169,4 +170,4 @@ def create_parser():
 if __name__ == '__main__':
     parser = create_parser()
     args = parser.parse_args()
-    convert_data(Path(args.src_dir), Path(args.dst_dir))
+    convert_data(Path(args.src_dir), Path(args.dst_dir), args.array_format)
