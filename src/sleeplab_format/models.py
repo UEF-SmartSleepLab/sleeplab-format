@@ -1,6 +1,6 @@
 """Data type definitions for the sleeplab format."""
 import numpy as np
-import pyarrow as pa
+import zarr
 
 from collections.abc import Callable
 from datetime import datetime
@@ -160,7 +160,7 @@ class SampleArray(
     values_func: Callable[[], np.ndarray]
     
     @cached_property
-    def values(self) -> np.ndarray:
+    def values(self) -> np.ndarray | zarr.Array:
         """Use @cached_property so that values_func gets evaluated once
         when values is accessed first time.
         """

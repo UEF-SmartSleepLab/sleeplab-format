@@ -113,7 +113,8 @@ def convert_data(
         src_dir: Path,
         dst_dir: Path,
         annotation_format: str,
-        array_format: str) -> None:
+        array_format: str,
+        clevel: int) -> None:
     """Convert the sleep-cassette dataset to sleeplab format."""    
     # SC-subjects.xls contains ID, night, age, sex, and lights off time for each subject.
     excel_path = src_dir / 'SC-subjects.xls'
@@ -131,7 +132,8 @@ def convert_data(
         name='sleep-cassette',
         series={'sc-night1': night1_series, 'sc-night2': night2_series})
 
-    slf.writer.write_dataset(ds, dst_dir, annotation_format=annotation_format, array_format=array_format)
+    slf.writer.write_dataset(ds, dst_dir, annotation_format=annotation_format,
+                             array_format=array_format, compression_level=clevel)
 
 
 def _create_parser():
@@ -142,6 +144,7 @@ def _create_parser():
         '-d', '--dst-dir', help='Path to the folder where the sleeplab-format dataset is saved.')
     parser.add_argument('--array-format', default='numpy', help='Array format, `numpy` or `parquet`')
     parser.add_argument('--annotation-format', default='json', help='Annotation format, `json` or `parquet`')
+    parser.add_argument('--clevel', type=int, default=9, help='Compression level for the numerical arrays.')
     
     return parser
 
@@ -154,5 +157,6 @@ if __name__ == '__main__':
         src_dir=Path(args.src_dir).expanduser(),
         dst_dir=Path(args.dst_dir).expanduser(),
         annotation_format=args.annotation_format,
-        array_format=args.array_format
+        array_format=args.array_format,
+        clevel=args.clevel
     )
