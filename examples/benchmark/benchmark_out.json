@@ -1,0 +1,58 @@
+{
+  "dod": {
+    "original": {
+      "size": 2.162312231,
+      "read_time": 2.794349431991577,
+      "read_process_time": 2.3887595
+    },
+    "numpy": {
+      "size": 1.122188264,
+      "write_time": 6.305482625961304,
+      "write_process_time": 0.000643499999999797,
+      "read_time": 0.024718761444091797,
+      "read_process_time": 0.02473130000000001
+    },
+    "zarr_clevel_9": {
+      "size": 1.039661186,
+      "write_time": 18.969644784927368,
+      "write_process_time": 0.0009919000000007117,
+      "read_time": 1.6033151149749756,
+      "read_process_time": 1.6032627999999995
+    },
+    "zarr_clevel_22": {
+      "size": 1.038559221,
+      "write_time": 114.77042627334595,
+      "write_process_time": 0.0007518000000006353,
+      "read_time": 1.6265058517456055,
+      "read_process_time": 1.6264130000000003
+    }
+  },
+  "sc": {
+    "original": {
+      "size": 0.197670304,
+      "read_time": 2.989612102508545,
+      "read_process_time": 2.983617099999999
+    },
+    "numpy": {
+      "size": 0.395442973,
+      "write_time": 6.256500720977783,
+      "write_process_time": 0.00042749999999891486,
+      "read_time": 0.00950765609741211,
+      "read_process_time": 0.009509400000000667
+    },
+    "zarr_clevel_9": {
+      "size": 0.157477233,
+      "write_time": 19.12977433204651,
+      "write_process_time": 0.000682400000000527,
+      "read_time": 0.5470798015594482,
+      "read_process_time": 0.547046400000001
+    },
+    "zarr_clevel_22": {
+      "size": 0.133656814,
+      "write_time": 190.5988805294037,
+      "write_process_time": 0.004148100000000099,
+      "read_time": 0.5315065383911133,
+      "read_process_time": 0.5316503000000008
+    }
+  }
+}
