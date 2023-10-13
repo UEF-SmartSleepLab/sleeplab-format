@@ -2,6 +2,7 @@ import argparse
 import h5py
 import json
 import logging
+import numpy as np
 import pyedflib
 import sleeplab_format as slf
 import subprocess
@@ -42,7 +43,7 @@ def convert_dod(src_dir: Path, dst_dir: Path, array_format: str, clevel: str) ->
 
 
 def iterate_dod(src_dir: Path) -> None:
-    """Iterate over dodo and dodh h5 files and load them to memory.
+    """Iterate over dodo and dodh h5 files and calculate mean.
 
     h5py.File with driver='core' loads the whole file into memory.
     """
@@ -50,8 +51,12 @@ def iterate_dod(src_dir: Path) -> None:
     for series in ['dodo', 'dodh']:
         for h5_path in (src_dir / series).iterdir():
             logger.info(f'Reading {str(h5_path)}')
-            h5_in_memory = h5py.File(h5_path, 'r', driver='core')
-            h5_in_memory.close()
+            h5 = h5py.File(h5_path, 'r')
+            for signal_type in h5['signals']:
+                for signal_name in h5['signals'][signal_type]:
+                    s = h5['signals'][signal_type][signal_name][:].astype(np.float32)
+                    _ = np.mean(s)
+            h5.close()
 
 
 def convert_sc(src_dir: Path, dst_dir: Path, array_format: str, clevel: str) -> None:
@@ -66,6 +71,8 @@ def iterate_sc(src_dir: Path) -> None:
     logger.info(f'Iterating {str(src_dir)}')
     for edf_path in (src_dir / 'sleep-cassette').glob('*.edf'):
         sigs, sig_headers, header = pyedflib.highlevel.read_edf(str(edf_path))
+        for s in sigs:
+            _ = np.mean(s)
 
 
 def iterate_slf_ds(ds_dir: Path) -> None:
@@ -75,7 +82,8 @@ def iterate_slf_ds(ds_dir: Path) -> None:
         for subject in series.subjects.values():
             for sarr in subject.sample_arrays.values():
                 # Read SampleArray values to memory
-                data = sarr.values_func()[:]
+                s = sarr.values_func()[:]
+                _ = np.mean(s)
 
 
 if __name__ == '__main__':

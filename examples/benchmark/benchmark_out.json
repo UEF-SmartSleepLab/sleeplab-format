@@ -2,57 +2,57 @@
   "dod": {
     "original": {
       "size": 2.162312231,
-      "read_time": 2.794349431991577,
-      "read_process_time": 2.3887595
+      "read_time": 0.8853259086608887,
+      "read_process_time": 0.8443261000000002
     },
     "numpy": {
       "size": 1.122188264,
-      "write_time": 6.305482625961304,
-      "write_process_time": 0.000643499999999797,
-      "read_time": 0.024718761444091797,
-      "read_process_time": 0.02473130000000001
+      "write_time": 12.594069242477417,
+      "write_process_time": 0.0004220999999997588,
+      "read_time": 0.2559809684753418,
+      "read_process_time": 0.25575930000000024
     },
     "zarr_clevel_9": {
       "size": 1.039661186,
-      "write_time": 18.969644784927368,
-      "write_process_time": 0.0009919000000007117,
-      "read_time": 1.6033151149749756,
-      "read_process_time": 1.6032627999999995
+      "write_time": 36.069222927093506,
+      "write_process_time": 0.0006035999999998154,
+      "read_time": 1.591914176940918,
+      "read_process_time": 1.5918959
     },
     "zarr_clevel_22": {
       "size": 1.038559221,
-      "write_time": 114.77042627334595,
-      "write_process_time": 0.0007518000000006353,
-      "read_time": 1.6265058517456055,
-      "read_process_time": 1.6264130000000003
+      "write_time": 125.85471963882446,
+      "write_process_time": 0.0008253000000006949,
+      "read_time": 1.7620036602020264,
+      "read_process_time": 1.7619410000000002
     }
   },
   "sc": {
     "original": {
       "size": 0.197670304,
-      "read_time": 2.989612102508545,
-      "read_process_time": 2.983617099999999
+      "read_time": 8.48120403289795,
+      "read_process_time": 8.091811499999999
     },
     "numpy": {
       "size": 0.395442973,
-      "write_time": 6.256500720977783,
-      "write_process_time": 0.00042749999999891486,
-      "read_time": 0.00950765609741211,
-      "read_process_time": 0.009509400000000667
+      "write_time": 5.849015951156616,
+      "write_process_time": 0.0005601999999989005,
+      "read_time": 0.09483551979064941,
+      "read_process_time": 0.09478839999999877
     },
     "zarr_clevel_9": {
       "size": 0.157477233,
-      "write_time": 19.12977433204651,
-      "write_process_time": 0.000682400000000527,
-      "read_time": 0.5470798015594482,
-      "read_process_time": 0.547046400000001
+      "write_time": 19.758970975875854,
+      "write_process_time": 0.0008797000000004829,
+      "read_time": 0.47019410133361816,
+      "read_process_time": 0.47016749999999874
     },
     "zarr_clevel_22": {
       "size": 0.133656814,
-      "write_time": 190.5988805294037,
-      "write_process_time": 0.004148100000000099,
-      "read_time": 0.5315065383911133,
-      "read_process_time": 0.5316503000000008
+      "write_time": 194.04995965957642,
+      "write_process_time": 0.003743800000000519,
+      "read_time": 0.4831533432006836,
+      "read_process_time": 0.4831163000000007
     }
   }
 }
