@@ -104,6 +104,7 @@ if __name__ == '__main__':
 
     dod_orig_dir = Path(args.dod_orig_dir)
     dod_slf_numpy_dir = slf_dir / 'dod_slf_numpy'
+    dod_slf_zarr_clevel_3_dir = slf_dir / 'dod_slf_clevel_3'
     dod_slf_zarr_clevel_9_dir = slf_dir / 'dod_slf_clevel_9'
     dod_slf_zarr_clevel_22_dir = slf_dir / 'dod_slf_clevel_22'
 
@@ -126,6 +127,17 @@ if __name__ == '__main__':
     res['dod']['numpy']['read_time'] = iterate_res['time']
     res['dod']['numpy']['read_process_time'] = iterate_res['process_time']
 
+    # Zarr compression level 3
+    convert_res = profile_time(convert_dod, dod_orig_dir, dod_slf_zarr_clevel_3_dir, 'zarr', '3')
+    res['dod']['zarr_clevel_3'] = {}
+    res['dod']['zarr_clevel_3']['size'] = int(get_size(dod_slf_zarr_clevel_3_dir)) / 1e9
+    res['dod']['zarr_clevel_3']['write_time'] = convert_res['time']
+    res['dod']['zarr_clevel_3']['write_process_time'] = convert_res['process_time']
+
+    iterate_res = profile_time(iterate_slf_ds, dod_slf_zarr_clevel_3_dir / dod_orig_dir.name)
+    res['dod']['zarr_clevel_3']['read_time'] = iterate_res['time']
+    res['dod']['zarr_clevel_3']['read_process_time'] = iterate_res['process_time']
+    
     # Zarr compression level 9
     convert_res = profile_time(convert_dod, dod_orig_dir, dod_slf_zarr_clevel_9_dir, 'zarr', '9')
     res['dod']['zarr_clevel_9'] = {}
@@ -154,12 +166,13 @@ if __name__ == '__main__':
 
     sc_orig_dir = Path(args.sc_orig_dir)
     sc_slf_numpy_dir = slf_dir / 'sc_slf_numpy'
+    sc_slf_zarr_clevel_3_dir = slf_dir / 'sc_slf_clevel_3'
     sc_slf_zarr_clevel_9_dir = slf_dir / 'sc_slf_clevel_9'
     sc_slf_zarr_clevel_22_dir = slf_dir / 'sc_slf_clevel_22'
 
     # Original
     res['sc']['original'] = {}
-    res['sc']['original']['size'] = int(get_size(sc_orig_dir)) / 1e9
+    res['sc']['original']['size'] = int(get_size(sc_orig_dir / 'sleep-cassette')) / 1e9
 
     iterate_res = profile_time(iterate_sc, sc_orig_dir)
     res['sc']['original']['read_time'] = iterate_res['time']
@@ -176,6 +189,17 @@ if __name__ == '__main__':
     res['sc']['numpy']['read_time'] = iterate_res['time']
     res['sc']['numpy']['read_process_time'] = iterate_res['process_time']
 
+    # Zarr compression level 3
+    convert_res = profile_time(convert_sc, sc_orig_dir, sc_slf_zarr_clevel_3_dir, 'zarr', '3')
+    res['sc']['zarr_clevel_3'] = {}
+    res['sc']['zarr_clevel_3']['size'] = int(get_size(sc_slf_zarr_clevel_3_dir)) / 1e9
+    res['sc']['zarr_clevel_3']['write_time'] = convert_res['time']
+    res['sc']['zarr_clevel_3']['write_process_time'] = convert_res['process_time']
+
+    iterate_res = profile_time(iterate_slf_ds, sc_slf_zarr_clevel_3_dir / 'sleep-cassette')
+    res['sc']['zarr_clevel_3']['read_time'] = iterate_res['time']
+    res['sc']['zarr_clevel_3']['read_process_time'] = iterate_res['process_time']
+    
     # Zarr compression level 9
     convert_res = profile_time(convert_sc, sc_orig_dir, sc_slf_zarr_clevel_9_dir, 'zarr', '9')
     res['sc']['zarr_clevel_9'] = {}
