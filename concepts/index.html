@@ -16,15 +16,15 @@
       
       
       <link rel="icon" href="../smartsleeplab_logo.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.3">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.6">
     
     
       
-        <title>Concepts and usage - Sleeplab-format</title>
+        <title>Concepts - Sleeplab-format</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.79e020e9.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.35e1ed30.min.css">
       
       
 
@@ -67,7 +67,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#concepts-and-usage" class="md-skip">
+        <a href="#concepts" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Concepts and usage
+              Concepts
             
           </span>
         </div>
@@ -353,7 +353,7 @@
         
   
   <span class="md-ellipsis">
-    Concepts and usage
+    Concepts
   </span>
   
 
@@ -619,8 +619,16 @@
   
 
 
-<h1 id="concepts-and-usage">Concepts and usage</h1>
-<p>TODO</p>
+<h1 id="concepts">Concepts</h1>
+<p><img alt="Overview of the Sleeplab format" src="../figures/fig1.svg" />
+<em>Fig. 1: Overview of the Sleeplab format ecosystem.</em></p>
+<p>A schematic diagram of the Sleeplab format (SLF) is shown in Fig. 1. The heterogeneous source data consists of the different file formats used with different PSG recording software. When a new dataset comes, the first task is to convert it to SLF. The <em>converters</em> contain the uggly part of wrangling the source data to SLF models. After that, the <em>writer</em> can be used to save the SLF dataset on disk. The SLF dataset can then be read to memory with the <em>reader</em>. Both reader and writer validate the data types and structures when they are used.</p>
+<p><img alt="Class diagram for the Sleeplab format" src="../figures/fig2.svg" /></p>
+<p><em>Fig. 2: Class diagram of the SLF base classes.</em></p>
+<p>SLF uses Pydantic models to represent the data. Pydantic models provides automatic validation of data types for Python classes. The compositon of models in SLF is shown in Fig. 2. A SLF dataset consists of any number of series, which can contain any number of subjects. Subjects consist of metadata, sample arrays, and annotations.</p>
+<p><img alt="SLF file format" src="../figures/fig3.svg" />
+<em>Fig. 3: The SLF file format</em></p>
+<p>SLF utilizes the file system to represent the dataset hierarchy on disk (Fig. 3). Datasets are folders, series are folders, and subjects are folders. All metadata and annotations are stored in plain-text JSON files by default. The PSG signals are stored in their own folders. The actual signal is stored in a binary format (NumPy files by default), and all metadata related to the signal is stored  in a JSON file.</p>
 
 
 
@@ -659,10 +667,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs"], "search": "../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.6eac0284.min.js"></script>
+      <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
       
     
   </body>
