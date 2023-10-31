@@ -1,6 +1,6 @@
 # Sleep staging using Dreem Open Datasets
 
-This is an end-to-end example of how to convert data from another format to sleeplab format, how to preprocess the data using sleeplab-extractor, and how to train a deep learning model utilizing sleeplab-tf-dataset. This example uses data from Dreem Open Datasets (DOD) since the DOD is well documented and open access ([https://doi.org/10.1109/TNSRE.2020.3011181](https://doi.org/10.1109/TNSRE.2020.3011181)).
+This is an end-to-end example of how to convert data from another format to sleeplab format, how to preprocess the data using sleeplab-extractor, and how to train a deep learning model utilizing sleeplab-tf-dataset. The code is [available on Github](https://github.com/UEF-SmartSleepLab/sleeplab-format/tree/main/examples/dod_sleep_staging). This example uses data from Dreem Open Datasets (DOD) since the DOD is well documented and open access ([https://doi.org/10.1109/TNSRE.2020.3011181](https://doi.org/10.1109/TNSRE.2020.3011181)).
 
 ## Prerequisites
 

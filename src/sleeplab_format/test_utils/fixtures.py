@@ -44,6 +44,8 @@ def sample_arrays():
 
 def events():
     return {
+        'scorer': 'automatic',
+        'type': 'aasmevents',
         'annotations': [
         {
             'name': 'SPO2_DESAT',
@@ -51,8 +53,8 @@ def events():
             'start_sec': 0.0,
             'duration': 15.0,
             'extra_attributes': {
-                'LowestSpO2': 93,
-                'Desaturation': 4
+                'min_spo2': 93,
+                'desat_limit': 4
             }
         },
         {
@@ -67,12 +69,13 @@ def events():
             'start_sec': 30.0,
             'duration': 10.0,
         }],
-        'scorer': 'automatic',
     }
 
 
 def hypnogram():
     return {
+        'scorer': 'scorer_1',
+        'type': 'hypnogram',
         'annotations': [
         {
             'name': 'N1',
@@ -81,30 +84,37 @@ def hypnogram():
             'duration': 30.0,
         },
         {
-            'name': 'WAKE',
+            'name': 'W',
             'start_ts': '2018-01-01T23:10:34',
             'start_sec': 30.0,
             'duration': 30.0
         },
         ],
-        'scorer': 'scorer scorer',
     }
 
 
 def study_logs():
     return {
-        'logs': [
+        'scorer': 'study',
+        'type': 'logs',
+        'annotations': [
         {
-            'ts': '2018-01-01T23:10:04',
-            'text': 'F3 - Impedance 1,4k'
+            'name': 'F3 - Impedance 1,4k',
+            'start_ts': '2018-01-01T23:10:04',
+            'start_sec': 0.0,
+            'duration': 0.0   
         },
         {
-            'ts': '2018-01-01T23:10:04',
-            'text': 'LIGHTS OUT'
+            'name': 'LIGHTS OUT',
+            'start_ts': '2018-01-01T23:10:04',
+            'start_sec': 0.0,
+            'duration': 0.0   
         },
         {
-            'ts': '2018-01-01T23:11:04',
-            'text': 'LIGHTS ON'
+            'name': 'LIGHTS ON',
+            'start_ts': '2018-01-01T23:11:04',
+            'start_sec': 60.0,
+            'duration': 0.0   
         }
     ]}
 
@@ -122,15 +132,15 @@ def subjects(subject_ids):
                 values_func=lambda v=v: v['values'])
             for k, v in dict_arrays.items()
         }
-
         subjs[sid] = Subject(
             metadata=metadata,
             sample_arrays=arrays,
             annotations={
-                'events': AASMAnnotations.model_validate(events()),
-                'hypnogram': Hypnogram.model_validate(hypnogram())
-            },
-            study_logs=Logs.model_validate(study_logs()))
+                'automatic_aasmevents': AASMEvents.model_validate(events()),
+                'scorer_1_hypnogram': Hypnogram.model_validate(hypnogram()),
+                'study_logs': Logs.model_validate(study_logs())
+            }
+        )
 
     return subjs
 

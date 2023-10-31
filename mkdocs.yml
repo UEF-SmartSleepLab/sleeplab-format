@@ -1,0 +1,44 @@
+site_name: Sleeplab-format
+repo_url: https://github.com/UEF-SmartSleepLab/sleeplab-format
+theme:
+  name: material
+  logo: smartsleeplab_logo.png
+  favicon: 'smartsleeplab_logo.png'
+  features:
+    - navigation.tabs
+
+# When a need to document multiple versions arises,
+# start using Mike https://github.com/jimporter/mike
+# extra:
+#   version:
+#     provider: mike
+
+nav:
+  - Home:
+    - Getting started: index.md
+    - Concepts: concepts.md
+    - Contributing: contributing.md
+  - Examples:
+    - Automatic sleep staging: examples/automatic_sleep_staging.md
+    - EDF conversion: examples/edf_conversion.md
+  - API Documentation:
+    - Reader: api/reader.md
+    - Writer: api/writer.md
+    - Models: api/models.md
+
+plugins:
+- mkdocstrings:
+    handlers:
+      python:
+        paths: [src]
+- search:
+    enabled: true
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

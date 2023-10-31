@@ -29,16 +29,16 @@ component_config = {
         'fs': 64.0
     },
     'hypnogram': {
-        'src_name': 'hypnogram_annotated.parquet',
+        'src_name': 'manual_consensus_hypnogram.a.parquet',
         'ctype': 'annotation',
         'sampling_interval': 30,
         'return_type': 'segmentation_combined',
         'value_map': {
-            'WAKE': 0,
+            'W': 0,
             'N1': 1,
             'N2': 2,
             'N3': 3,
-            'REM': 4,
+            'R': 4,
             '_default': 0  # Stages unspecified in value_map will be assigned as wake
         }
     }
@@ -47,10 +47,10 @@ component_config = {
 
 dataset_config = {
     'dodh': {
-        'ds_dir': '/tmp/slf/dod_extracted/dod',
+        'ds_dir': '/tmp/slf/dod_extracted',
         'series_name': 'dodh',
         'roi_src_type': 'annotation',
-        'roi_src_name': 'hypnogram',
+        'roi_src_name': 'manual_consensus_hypnogram',
         'components': component_config,
         'splits': {
             # Total number of recordings = 25
@@ -79,10 +79,10 @@ dataset_config = {
         }
     },
     'dodo': {
-        'ds_dir': '/tmp/slf/dod_extracted/dod',
+        'ds_dir': '/tmp/slf/dod_extracted',
         'series_name': 'dodo',
         'roi_src_type': 'annotation',
-        'roi_src_name': 'hypnogram',
+        'roi_src_name': 'manual_consensus_hypnogram',
         'components': component_config,
         'splits': {
             # Total number of recordings = 56
@@ -131,8 +131,7 @@ def load_dataset(cfg: dict[str, Any], seed: int) -> dict[str, tf.data.Dataset]:
     logger.info(f"Reading the series {cfg['series_name']}...")
     slf_ds = slf.reader.read_dataset(
         ds_dir=Path(cfg['ds_dir']),
-        series_names=[cfg['series_name']],
-        include_logs=False
+        series_names=[cfg['series_name']]
     )
 
     logger.info('Creating the splits...')

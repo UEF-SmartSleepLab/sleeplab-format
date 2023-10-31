@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "sleeplab-format"
 dynamic = ["version"]
-description = "Tools for transforming heterogeneous source data to a unified format"
+description = "A standardized format for polysomnography recordings."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -17,10 +17,8 @@ dependencies = [
     "pandas",
     "pyarrow",
     "pydantic>=2.0",
+    "zarr"
 ]
-
-[project.scripts]
-profusion_convert = "sleeplab_format.converters.profusion.convert:cli_convert_dataset"
 
 [project.urls]
 Documentation = "https://github.com/UEF-SmartSleepLab/sleeplab-format#readme"
@@ -42,6 +40,17 @@ no-cov = "cov --no-cov {args}"
 
 [[tool.hatch.envs.test.matrix]]
 python = ["39", "310", "311"]
+
+[tool.hatch.envs.docs]
+dependencies = [
+  "mkdocs-material",
+  "mkdocstrings[python]>=0.18"
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build"
+serve = "mkdocs serve"
+publish = "mkdocs gh-deploy --force"
 
 [tool.coverage.run]
 branch = true

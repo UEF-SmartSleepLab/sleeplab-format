@@ -1,0 +1,72 @@
+{
+  "dod": {
+    "original": {
+      "size": 60.40806504,
+      "read_time": 14.68839979171753,
+      "read_process_time": 14.661088544000002
+    },
+    "numpy": {
+      "size": 31.364919003,
+      "write_time": 97.14349317550659,
+      "write_process_time": 0.001842060999997841,
+      "read_time": 5.250938892364502,
+      "read_process_time": 5.2089577469999995
+    },
+    "zarr_clevel_3": {
+      "size": 28.996944307,
+      "write_time": 179.81647634506226,
+      "write_process_time": 0.0021417330000019774,
+      "read_time": 44.69841432571411,
+      "read_process_time": 44.101036901
+    },
+    "zarr_clevel_9": {
+      "size": 28.994461131,
+      "write_time": 275.59652829170227,
+      "write_process_time": 0.008212545000006344,
+      "read_time": 44.38427495956421,
+      "read_process_time": 43.753908525
+    },
+    "zarr_clevel_22": {
+      "size": 28.974419571,
+      "write_time": 5038.318420648575,
+      "write_process_time": 0.09954332300000601,
+      "read_time": 44.838881969451904,
+      "read_process_time": 44.76773608399999
+    }
+  },
+  "sc": {
+    "original": {
+      "size": 7.596619959,
+      "read_time": 152.13645195960999,
+      "read_process_time": 138.88337268900003
+    },
+    "numpy": {
+      "size": 15.199365524,
+      "write_time": 205.90637707710266,
+      "write_process_time": 0.004490690000011455,
+      "read_time": 2.9377377033233643,
+      "read_process_time": 2.866333382999983
+    },
+    "zarr_clevel_3": {
+      "size": 7.298113565,
+      "write_time": 241.7876467704773,
+      "write_process_time": 0.0022111729999778618,
+      "read_time": 21.180639028549194,
+      "read_process_time": 21.08447948899999
+    },
+    "zarr_clevel_9": {
+      "size": 6.024802575,
+      "write_time": 590.6064672470093,
+      "write_process_time": 0.006474040000000514,
+      "read_time": 20.259886264801025,
+      "read_process_time": 20.224318955
+    },
+    "zarr_clevel_22": {
+      "size": 5.12707409,
+      "write_time": 4985.32662320137,
+      "write_process_time": 0.05863521999998511,
+      "read_time": 21.020677089691162,
+      "read_process_time": 20.993127110000046
+    }
+  }
+}
