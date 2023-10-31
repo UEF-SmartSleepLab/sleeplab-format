@@ -2,8 +2,8 @@ boto3
 h5py
 numpy
 matplotlib
-sleeplab-extractor @ git+https://github.com/UEF-SmartSleepLab/sleeplab-extractor@develop-v0.3.0
-sleeplab-format @ git+https://github.com/UEF-SmartSleepLab/sleeplab-format@annotations_v0.3
-sleeplab-tf-dataset @ git+https://github.com/UEF-SmartSleepLab/sleeplab-tf-dataset@develop-v0.3.0
+sleeplab-extractor @ git+https://github.com/UEF-SmartSleepLab/sleeplab-extractor
+sleeplab-format
+sleeplab-tf-dataset @ git+https://github.com/UEF-SmartSleepLab/sleeplab-tf-dataset
 tensorflow==2.12
 tqdm
