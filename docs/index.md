@@ -2,7 +2,7 @@
 
 Sleeplab format (SLF) is a both machine and human-readable format to store and process polysomnography recordings. It provides reader and writer with built-in validation of the data types and structures. SLF was designed for harmonization of datasets from different sources to enable easier application of analysis and machine learning pipelines on multiple datasets.
 
-See [Concepts and usage](usage.md) for detailed description of the format.
+See [Concepts](concepts.md) for detailed description of the format.
 
 ## Installation
 

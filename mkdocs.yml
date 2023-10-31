@@ -16,7 +16,7 @@ theme:
 nav:
   - Home:
     - Getting started: index.md
-    - Concepts and usage: usage.md
+    - Concepts: concepts.md
     - Contributing: contributing.md
   - Examples:
     - Automatic sleep staging: examples/automatic_sleep_staging.md

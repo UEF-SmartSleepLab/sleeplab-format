@@ -1,3 +1,0 @@
-# Concepts and usage
-
-TODO

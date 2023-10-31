@@ -30,6 +30,12 @@ JSON_INDENT = 2
 def write_subject_metadata(
         subject: Subject,
         subject_path: Path) -> None:
+    """Write subject metadata to JSON file.
+    
+    Arguments:
+        subject: The sleeplab_format.models.Subject whose metadata will be saved.
+        subject_path: The path to the subject folder.
+    """
     metadata_path = subject_path / 'metadata.json'
     metadata_path.write_text(
         subject.metadata.model_dump_json(indent=JSON_INDENT, exclude_none=True),
@@ -49,7 +55,7 @@ def write_sample_arrays(
         subject_path: Path to the folder where the sample arrays are saved.
         format: The save format for the numerical arrays; `numpy`, `parquet` or `zarr`.
         zarr_chunksize: The chunk size in bytes if `format='zarr'`.
-        zarr_zstd_level: The compression level used with the Zstandard compression.
+        zarr_compression_level: The compression level used with the Zstandard compression.
     """
     for name, sarr in subject.sample_arrays.items():
         assert name == sarr.attributes.name
@@ -99,6 +105,13 @@ def write_annotations(
         subject: Subject,
         subject_path: Path,
         format: str = 'json') -> None:
+    """Write SLF annotations to disk.
+    
+    Arguments:
+        subject: A sleeplab_format.models.Subject whose annotations will be written.
+        subject_path: The path to the subject folder.
+        format: The format of annotation files.
+    """
     for k, v in subject.annotations.items():
         _msg = f'Annotation key should equal to "{v.scorer}_{v.type}", got "{k}"'
         assert k == f'{v.scorer}_{v.type}', _msg
@@ -128,6 +141,15 @@ def write_subject(
         annotation_format: str = 'json',
         array_format: str = 'numpy',
         compression_level: int = 9) -> None:
+    """Write a single Subject to disk.
+    
+    Arguments:
+        subject: A sleeplab_format.models.Subject to save.
+        subject_path: Path to the subject save folder.
+        annotation_format: The format of annotation files.
+        array_format: The format of the sample array data files.
+        compression_level: The zstd compression level if `array_format` is `zarr`.
+    """
     subject_path.mkdir(exist_ok=True)
     write_subject_metadata(subject, subject_path)
     
@@ -144,6 +166,15 @@ def write_series(
         annotation_format: str = 'json',
         array_format: str = 'numpy',
         compression_level: int = 9) -> None:
+    """Write a sleeplab_format.models.Series to disk.
+    
+    Arguments:
+        series: The sleeplab_format.models.Series to save.
+        series_path: The path to the folder where the series will be saved.
+        annotation_format: The format of the annotation files.
+        array_format: The format of the sample array data files.
+        compression_level: The zstd compression level if `array_format` is `zarr`.
+    """
     for sid, subject in series.subjects.items():
         logger.info(f'Writing subject ID {sid}...')
         subject_path = series_path / subject.metadata.subject_id
@@ -161,6 +192,15 @@ def write_dataset(
         annotation_format: str = 'json',
         array_format: str = 'numpy',
         compression_level: int = 9) -> None:
+    """Write a SLF dataset to disk.
+    
+    Arguments:
+        dataset: A sleeplab_format.models.Dataset.
+        basedir: The folder where the dataset will be saved.
+        annotation_format: The format of the annotation files.
+        array_format: The format of the sample array data files.
+        compression_level: The zstd compression level if `array_format` is `zarr`.
+    """
     assert annotation_format in ['json', 'parquet']
     assert array_format in ['numpy', 'parquet', 'zarr']
 
