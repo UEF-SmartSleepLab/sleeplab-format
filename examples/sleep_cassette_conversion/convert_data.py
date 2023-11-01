@@ -142,7 +142,7 @@ def _create_parser():
         '-s', '--src-dir', help='Path to the sleep-edfx root folder, e.g. `sleep-edfx/1.0.0`')
     parser.add_argument(
         '-d', '--dst-dir', help='Path to the folder where the sleeplab-format dataset is saved.')
-    parser.add_argument('--array-format', default='numpy', help='Array format, `numpy` or `parquet`')
+    parser.add_argument('--array-format', default='numpy', help='Array format, `numpy` or `zarr`')
     parser.add_argument('--annotation-format', default='json', help='Annotation format, `json` or `parquet`')
     parser.add_argument('--clevel', type=int, default=9, help='Compression level for the numerical arrays.')
     

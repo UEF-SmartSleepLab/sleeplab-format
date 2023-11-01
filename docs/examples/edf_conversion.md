@@ -1,6 +1,6 @@
 # Converting the Sleep Cassette dataset to sleeplab-format
 
-This is an example of how to convert EDF and EDF+ files to sleeplab-format. The example uses the [Sleep Cassette dataset](https://physionet.org/content/sleep-edfx/1.0.0/), which is openly available for download and usage.
+This is an example of how to convert EDF and EDF+ files to sleeplab-format. The code is [available on Github](https://github.com/UEF-SmartSleepLab/sleeplab-format/tree/main/examples/dod_sleep_staging) The example uses the [Sleep Cassette dataset](https://physionet.org/content/sleep-edfx/1.0.0/), which is openly available for download and usage.
 
 ## Setup
 
@@ -32,25 +32,25 @@ wget -r -N -c -np https://physionet.org/files/sleep-edfx/1.0.0/
 The code for conversion is in `convert_data.py`. The module provides a command line interface, which takes as arguments:
 - --src-dir: The folder containing the original EDF data (`SC-subjects.xls` Excel and `sleep-cassette/` folder).
 - --dst-dir: The folder where the sleeplab-format dataset will be saved.
-- --array-format: The save format of the signals; `numpy` or `parquet`.
+- --array-format: The save format of the signals; `numpy` or `zarr`.
 - --annotation-format: The save format of the annotation files; `json` or `parquet`.
 
 For example, to store the signals as parquet files, and annotations as json files:
 ```console
 python convert_data.py --src-dir physionet.org/files/sleep-edfx/1.0.0 \
-    --dst-dir /tmp/sleeplab_format --array-format parquet --annotation-format json
+    --dst-dir /tmp/sleeplab_format --array-format zarr --annotation-format json
 ```
 
-The Sleep-Cassette dataset contains 153 PSG recordings, 20h duration each. There are two recordings recorded on consecutive dates for each subject. Detailed information can be found on the [dataset documentation](https://physionet.org/content/sleep-edfx/1.0.0/). The consecutive recordings are stored in separate sleeplab-format series `sc-night1` and `sc-night2`. Detailed information on the sleeplab-format data structures can be found in the [sleeplab-format documentation](https://uef-smartsleeplab.github.io/sleeplab-format/usage/).
+The Sleep-Cassette dataset contains 153 PSG recordings, 20h duration each. There are two recordings recorded on consecutive dates for each subject. Detailed information can be found on the [dataset documentation](https://physionet.org/content/sleep-edfx/1.0.0/). The consecutive recordings are stored in separate sleeplab-format series `sc-night1` and `sc-night2`. Detailed information on the sleeplab-format data structures can be found in the [sleeplab-format documentation](https://uef-smartsleeplab.github.io/sleeplab-format/concepts/).
 
 ## Resulting dataset sizes
 
 
 | Dataset                       | Size (Gb) |
 | -----------------             | ---------:|
-| Original EDF files            | 7.42      |
-| SLF, array format `numpy`     | 14.85     |
-| SLF, array format `parquet`   | 5.36      |
+| Original EDF files            | 7.4       |
+| SLF, array format `numpy`     | 14.9      |
+| SLF, array format `zarr`      | 5.7       |
 
 
-The EDF files stores signals as 16-bit signed ints. In this example, the signals are stored as 32-bit floats in the sleeplab-format, which doubles the dataset size if uncompressed numpy files are used for the signals. However, if the signals are saved in parquet files, the size is reduced significantly from the original EDF files. The reason for this size reduction is currently not known. Parquet uses Snappy compression algorithm, which encodes recurring patterns as (pattern, count) pairs. However, EEG, EOG, and EMG signals are characterized by random fluctuations and noise, which means that a lossless compression algorithm should not be able to compress the data significantly. The size reduction might be related to the AD and EDF conversions, signal filtering, and artefacts.
+The EDF files stores signals as 16-bit signed ints. In this example, the signals are stored as 32-bit floats in the sleeplab-format, which doubles the dataset size if uncompressed numpy files are used for the signals. However, if the signals are compressed with Zarr using Zstandard compression, the size is reduced significantly from the original EDF files. EEG, EOG, and EMG signals are characterized by random fluctuations and noise, which means that a lossless compression algorithm should not be able to compress the data significantly. The size reduction might be related to the AD and EDF conversions, signal filtering, and artefacts.
