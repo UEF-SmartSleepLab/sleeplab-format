@@ -1,6 +1,5 @@
-
-
 [![DOI](https://zenodo.org/badge/558261131.svg)](https://zenodo.org/badge/latestdoi/558261131)
+[![PyPI version](https://badge.fury.io/py/sleeplab-format.svg)](https://badge.fury.io/py/sleeplab-format)
 # sleeplab-format
 
 Sleeplab format (SLF) is a both machine and human-readable format for storing and processing polysomnography data. SLF provides reader and writer with validation of data types and structures. The goal is to make it easier to apply analytics and machine learning pipelines to multiple datasets from different sources.
