@@ -35,7 +35,7 @@ def get_size(dir: Path):
 
 
 def convert_dod(src_dir: Path, dst_dir: Path, array_format: str, clevel: str) -> None:
-    subprocess.run(['python', '../dod_sleep_staging/convert_data.py',
+    subprocess.run(['nocache', 'python', '../dod_sleep_staging/convert_data.py',
                     '-s', src_dir,
                     '-d', dst_dir,
                     '--array-format', array_format,
@@ -49,7 +49,7 @@ def iterate_dod(src_dir: Path) -> None:
     """
     logger.info(f'Iterating {str(src_dir)}')
     for series in ['dodo', 'dodh']:
-        for h5_path in (src_dir / series).iterdir():
+        for h5_path in (src_dir / series).glob('*.h5'):
             logger.info(f'Reading {str(h5_path)}')
             h5 = h5py.File(h5_path, 'r')
             for signal_type in h5['signals']:
@@ -60,7 +60,7 @@ def iterate_dod(src_dir: Path) -> None:
 
 
 def convert_sc(src_dir: Path, dst_dir: Path, array_format: str, clevel: str) -> None:
-    subprocess.run(['python', '../sleep_cassette_conversion/convert_data.py',
+    subprocess.run(['nocache', 'python', '../sleep_cassette_conversion/convert_data.py',
                     '-s', src_dir,
                     '-d', dst_dir,
                     '--array-format', array_format,
