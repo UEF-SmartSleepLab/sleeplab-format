@@ -153,8 +153,9 @@ def write_subject(
     subject_path.mkdir(exist_ok=True)
     write_subject_metadata(subject, subject_path)
     
-    write_sample_arrays(subject, subject_path, format=array_format,
-                        zarr_compression_level=compression_level)
+    if subject.sample_arrays is not None:
+        write_sample_arrays(subject, subject_path, format=array_format,
+                            zarr_compression_level=compression_level)
 
     if subject.annotations is not None:
         write_annotations(subject, subject_path, format=annotation_format)
