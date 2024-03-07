@@ -17,3 +17,9 @@ def recreate_test_files() -> None:
 
     # Then recreate them
     create_datasets(ds_dir)
+
+
+@pytest.fixture(scope='session')
+def example_extractor_config_path():
+    data_dir = Path(__file__).parent / 'extractor' / 'data'
+    return data_dir / 'example_config.yml'
