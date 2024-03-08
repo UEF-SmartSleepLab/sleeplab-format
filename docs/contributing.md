@@ -89,7 +89,7 @@ Then, publish to TestPyPI with:
 hatch publish -r test
 ```
 
-Finally publish to PyPI with:
+If the TestPyPI package is OK, publish to PyPI with:
 ```bash
 hatch publish
 ```
