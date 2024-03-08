@@ -211,6 +211,7 @@ def write_dataset(
     dataset_path.mkdir(parents=True, exist_ok=True)
 
     # Write the dataset metadata
+    dataset.version = SLEEPLAB_FORMAT_VERSION
     metadata_path = dataset_path / 'metadata.json'
     metadata_path.write_text(
         dataset.model_dump_json(exclude={'series'}, indent=JSON_INDENT))

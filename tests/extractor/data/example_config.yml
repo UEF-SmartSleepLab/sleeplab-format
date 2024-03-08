@@ -1,0 +1,69 @@
+# You must give a new name for the extracted dataset
+new_dataset_name: "dataset1_extracted"
+
+# annotation_format can be "parquet" or "json".
+annotation_format: "parquet"
+
+# array_format can be "numpy" or "parquet".
+array_format: "numpy"
+
+# A separate config must be defined for each series that is desired to be extracted.
+series_configs:
+
+  - name: "series1"
+    
+    # Subjects can be filtered out of resulting dataset using filter conditions
+    filter_conds:
+      - name: "tst_less_than_30s"
+        method: "sleeplab_format.extractor.preprocess.filter_by_tst"
+        kwargs: {"min_tst_sec": 30.0, "hypnogram_key": "scorer_1_hypnogram"}
+
+    array_configs:
+
+      # The extraction for a given array consists of a chain of actions.
+      - name: "s1"
+        actions:
+          
+          # Each action has a freely defined name that is currently not stored anywhere.
+          # method is any python function that is automatically imported during the extraction.
+          # kwargs defines the arguments that are passed to the method.
+          # updated_attributes are the key-value pairs that are changed in sampl_array.attributes.
+          - name: "resample"
+            method: "sleeplab_format.extractor.preprocess.decimate"
+            kwargs: {"fs_new": 8}
+            updated_attributes: {"sampling_rate": 8, "name": "s1_8Hz"}
+
+      - name: "s2"
+
+        # There can be multiple actions, which are executed in order.
+        actions:
+          
+          - name: "resample"
+            method: "sleeplab_format.extractor.preprocess.resample_polyphase"
+            kwargs: {"fs_new": 16}
+            updated_attributes: {"sampling_rate": 16, "name": "s2_16Hz_hp"}
+
+          - name: "highpass"
+            method: "sleeplab_format.extractor.preprocess.highpass"
+            kwargs: {"cutoff": 0.3}
+
+      - name: "s2"
+        
+        actions:
+          - name: "resample"
+            method: "sleeplab_format.extractor.preprocess.resample_polyphase"
+            kwargs: {"fs_new": 32}
+            updated_attributes: {"sampling_rate": 32}
+
+          - name: "subtract_reference"
+            method: "sleeplab_format.extractor.preprocess.sub_ref"
+            ref_name: "s1"
+            updated_attributes: {"name": "s2s1_32Hz"}
+    
+      - name: "s1"
+        
+        actions:
+          - name: "upsample_linear"
+            method: "sleeplab_format.extractor.preprocess.upsample_linear"
+            kwargs: {"fs_new": 64}
+            updated_attributes: {"sampling_rate": 128, "name": "s1_64Hz"}

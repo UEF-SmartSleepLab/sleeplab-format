@@ -2,7 +2,6 @@ boto3
 h5py
 numpy
 matplotlib
-sleeplab-extractor @ git+https://github.com/UEF-SmartSleepLab/sleeplab-extractor
 sleeplab-format
 sleeplab-tf-dataset @ git+https://github.com/UEF-SmartSleepLab/sleeplab-tf-dataset
 tensorflow==2.12

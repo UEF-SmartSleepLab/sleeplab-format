@@ -70,3 +70,28 @@ Publish the documentation:
 ```console
 hatch run docs:publish
 ```
+
+## Publishing to Zenodo
+
+Whenever a new release is created in Github, the version will automatically be published in Zenodo.
+
+## Publishing to PyPI
+
+First, **remember to update the version in version.py**. Then, follow [Hatch publishing instructions](https://hatch.pypa.io/1.9/publish/). 
+
+Build the package with hatch:
+```bash
+hatch build
+```
+
+Then, publish to TestPyPI with:
+```bash
+hatch publish -r test
+```
+
+If the TestPyPI package is OK, publish to PyPI with:
+```bash
+hatch publish
+```
+
+Use [token authentication](https://pypi.org/help/#apitoken) with PyPI.

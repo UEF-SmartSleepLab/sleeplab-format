@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "sleeplab-format"
 dynamic = ["version"]
-description = "A standardized format for polysomnography recordings."
+description = "An interoperable and harmonized format for polysomnography recordings."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -16,9 +16,14 @@ dependencies = [
     "numpy",
     "pandas",
     "pyarrow",
+    "pyyaml",
     "pydantic>=2.0",
+    "scipy",
     "zarr"
 ]
+
+[project.scripts]
+slf-extract = "sleeplab_format.extractor.cli:run_cli"
 
 [project.urls]
 Documentation = "https://github.com/UEF-SmartSleepLab/sleeplab-format#readme"

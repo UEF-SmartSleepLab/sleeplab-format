@@ -25,6 +25,7 @@ nav:
     - Reader: api/reader.md
     - Writer: api/writer.md
     - Models: api/models.md
+    - Extractor: api/extractor.md
 
 plugins:
 - mkdocstrings:

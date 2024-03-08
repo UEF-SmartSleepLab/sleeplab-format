@@ -1,8 +1,8 @@
-# Sleeplab-format v0.3.1
+# Sleeplab-format v0.4.0
 
 Sleeplab format (SLF) is a both machine and human-readable format to store and process polysomnography recordings. It provides reader and writer with built-in validation of the data types and structures. SLF was designed for harmonization of datasets from different sources to enable easier application of analysis and machine learning pipelines on multiple datasets.
 
-See [Concepts](concepts.md) for detailed description of the format.
+See [Concepts](concepts.md) and [the paper](https://arxiv.org/abs/2402.06702v1) for detailed description of the format.
 
 ## Installation
 
@@ -52,10 +52,12 @@ slf.writer.write_dataset(ds, MODIFIED_DS_DIR)
 
 See [Examples](examples/automatic_sleep_staging.md) for end-to-end use cases.
 
+## SLF extractor
+
+The `sleeplab-format` package provides an extractor that can be used to select and preprocess a subset of signals for further analyses. See [the automatic sleep staging example](examples/automatic_sleep_staging.md#extract-and-preprocess-a-subset-of-the-signals) for usage instructions.
+
 ## Related tools
 
 [sleeplab-converters](https://github.com/UEF-SmartSleepLab/sleeplab-converters) for converting other formats exported from PSG software to sleeplab format.
-
-[sleeplab-extractor](https://github.com/UEF-SmartSleepLab/sleeplab-extractor) for extracting and preprocessing a subset of data in sleeplab format for the needs of specific studies.
 
 [sleeplab-tf-dataset](https://github.com/UEF-SmartSleepLab/sleeplab-tf-dataset) for reading data in sleeplab format as a tensorflow Dataset.
