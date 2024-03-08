@@ -6,13 +6,11 @@ Sleeplab format (SLF) is a both machine and human-readable format for storing an
 
 ## Documentation
 
-See [full documentation](https://uef-smartsleeplab.github.io/sleeplab-format/) for details.
+See [full documentation](https://uef-smartsleeplab.github.io/sleeplab-format/) and [the paper](https://arxiv.org/abs/2402.06702v1) for details.
 
 ## Related tools
 
 [sleeplab-converters](https://github.com/UEF-SmartSleepLab/sleeplab-converters) for converting other formats exported from PSG software to sleeplab format.
-
-[sleeplab-extractor](https://github.com/UEF-SmartSleepLab/sleeplab-extractor) for extracting and preprocessing a subset of data in sleeplab format for the needs of specific studies.
 
 [sleeplab-tf-dataset](https://github.com/UEF-SmartSleepLab/sleeplab-tf-dataset) for reading data in sleeplab format as a tensorflow Dataset.
 

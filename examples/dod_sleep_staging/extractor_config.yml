@@ -2,11 +2,10 @@
 # of signals for automatic sleep staging.
 new_dataset_name: "dod_extracted"
 
-# Currently, sleeplab-tf-dataset only supports annotations in parquet format.
-# Note that the source sleeplab formatted dataset can be in json format.
-annotation_format: "parquet"
+# The format of the annotation files.
+annotation_format: "json"
 
-# Signals should be extracted to uncompressed numpy arrays.
+# Signals will be extracted to uncompressed numpy arrays.
 array_format: "numpy"
 
 # A separate config must be defined for each series to be extracted.
@@ -18,7 +17,7 @@ series_configs:
     # Exclude recordings with less than one hour of sleep
     filter_conds:
       - name: "tst_less_than_1h"
-        method: "sleeplab_extractor.preprocess.filter_by_tst"
+        method: "sleeplab_format.extractor.preprocess.filter_by_tst"
         kwargs: {"min_tst_sec": 3600.0, "hypnogram_key": "manual_consensus_hypnogram"}
 
     array_configs:
@@ -33,51 +32,51 @@ series_configs:
           # kwargs defines the arguments that are passed to the method.
           # updated_attributes are key-value pairs that will be changed in the new signal attributes.
           - name: "resample"
-            method: "sleeplab_extractor.preprocess.resample_polyphase"
+            method: "sleeplab_format.extractor.preprocess.resample_polyphase"
             kwargs: {"fs_new": 64}
             updated_attributes: {"sampling_rate": 64, "name": "C3_M2_64Hz"}
 
           - name: "highpass"
-            method: "sleeplab_extractor.preprocess.highpass"
+            method: "sleeplab_format.extractor.preprocess.highpass"
             kwargs: {"cutoff": 0.3}
 
           - name: "normalize"
-            method: "sleeplab_extractor.preprocess.z_score_norm"
+            method: "sleeplab_format.extractor.preprocess.z_score_norm"
 
       - name: "EOG2"
         actions:
           - name: "resample"
-            method: "sleeplab_extractor.preprocess.resample_polyphase"
+            method: "sleeplab_format.extractor.preprocess.resample_polyphase"
             kwargs: {"fs_new": 64}
             updated_attributes: {"sampling_rate": 64, "name": "EOG2_64Hz"}
 
           - name: "highpass"
-            method: "sleeplab_extractor.preprocess.highpass"
+            method: "sleeplab_format.extractor.preprocess.highpass"
             kwargs: {"cutoff": 0.3}
 
           - name: "normalize"
-            method: "sleeplab_extractor.preprocess.z_score_norm"
+            method: "sleeplab_format.extractor.preprocess.z_score_norm"
 
       - name: "EMG"
         actions:
           - name: "resample"
-            method: "sleeplab_extractor.preprocess.resample_polyphase"
+            method: "sleeplab_format.extractor.preprocess.resample_polyphase"
             kwargs: {"fs_new": 64}
             updated_attributes: {"sampling_rate": 64, "name": "EMG_64Hz"}
 
           - name: "highpass"
-            method: "sleeplab_extractor.preprocess.highpass"
+            method: "sleeplab_format.extractor.preprocess.highpass"
             kwargs: {"cutoff": 0.3}
 
           - name: "normalize"
-            method: "sleeplab_extractor.preprocess.z_score_norm"
+            method: "sleeplab_format.extractor.preprocess.z_score_norm"
 
   # Define configs for DOD-O
   - name: "dodo"
 
     filter_conds:
       - name: "tst_less_than_1h"
-        method: "sleeplab_extractor.preprocess.filter_by_tst"
+        method: "sleeplab_format.extractor.preprocess.filter_by_tst"
         kwargs: {"min_tst_sec": 3600.0, "hypnogram_key": "manual_consensus_hypnogram"}
 
     array_configs:
@@ -85,41 +84,41 @@ series_configs:
       - name: "C3_M2"
         actions:
           - name: "resample"
-            method: "sleeplab_extractor.preprocess.resample_polyphase"
+            method: "sleeplab_format.extractor.preprocess.resample_polyphase"
             kwargs: {"fs_new": 64}
             updated_attributes: {"sampling_rate": 64, "name": "C3_M2_64Hz"}
 
           - name: "highpass"
-            method: "sleeplab_extractor.preprocess.highpass"
+            method: "sleeplab_format.extractor.preprocess.highpass"
             kwargs: {"cutoff": 0.3}
 
           - name: "normalize"
-            method: "sleeplab_extractor.preprocess.z_score_norm"
+            method: "sleeplab_format.extractor.preprocess.z_score_norm"
 
       - name: "EOG2"
         actions:
           - name: "resample"
-            method: "sleeplab_extractor.preprocess.resample_polyphase"
+            method: "sleeplab_format.extractor.preprocess.resample_polyphase"
             kwargs: {"fs_new": 64}
             updated_attributes: {"sampling_rate": 64, "name": "EOG2_64Hz"}
 
           - name: "highpass"
-            method: "sleeplab_extractor.preprocess.highpass"
+            method: "sleeplab_format.extractor.preprocess.highpass"
             kwargs: {"cutoff": 0.3}
 
           - name: "normalize"
-            method: "sleeplab_extractor.preprocess.z_score_norm"
+            method: "sleeplab_format.extractor.preprocess.z_score_norm"
 
       - name: "EMG"
         actions:
           - name: "resample"
-            method: "sleeplab_extractor.preprocess.resample_polyphase"
+            method: "sleeplab_format.extractor.preprocess.resample_polyphase"
             kwargs: {"fs_new": 64}
             updated_attributes: {"sampling_rate": 64, "name": "EMG_64Hz"}
 
           - name: "highpass"
-            method: "sleeplab_extractor.preprocess.highpass"
+            method: "sleeplab_format.extractor.preprocess.highpass"
             kwargs: {"cutoff": 0.3}
 
           - name: "normalize"
-            method: "sleeplab_extractor.preprocess.z_score_norm"
+            method: "sleeplab_format.extractor.preprocess.z_score_norm"

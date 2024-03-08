@@ -11,7 +11,13 @@ logger = logging.getLogger(__name__)
 
 
 def extract(src_dir: Path, dst_dir: Path, cfg: config.DatasetConfig) -> None:
-    """Read, preprocess, and write data in sleeplab format.""" 
+    """Read, preprocess, and write data in sleeplab format.
+    
+    Arguments:
+        src_dir: The source SLF dataset folder.
+        dst_dir: The root folder where the extracted dataset will be saved.
+        cfg: The extractor config.
+    """ 
     logger.info(f'Reading dataset from {src_dir}')
     series_names = [series_config.name for series_config in cfg.series_configs]
     ds = reader.read_dataset(src_dir, series_names=series_names)
