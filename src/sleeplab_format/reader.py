@@ -42,9 +42,9 @@ def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
                 values_func = lambda _p=p / 'data.parquet': pq.read_table(
                     _p)['data'].to_numpy()
             elif (p / 'data.zarr').exists():
-                values_func = lambda _p=p / 'data.zarr': zarr.open(_p, mode='r')
+                values_func = lambda _p=p / 'data.zarr': zarr.load(_p)
             else:
-                raise FileNotFoundError(f'No data.npy or data.parquet in {p}')
+                raise FileNotFoundError(f'No data.npy, data.zarr, or data.parquet in {p}')
 
             assert p.name == attributes.name
             sarrs[p.name] = SampleArray(

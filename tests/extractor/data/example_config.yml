@@ -2,9 +2,9 @@
 new_dataset_name: "dataset1_extracted"
 
 # annotation_format can be "parquet" or "json".
-annotation_format: "parquet"
+annotation_format: "json"
 
-# array_format can be "numpy" or "parquet".
+# array_format can be "numpy", "parquet" or "zarr".
 array_format: "numpy"
 
 # A separate config must be defined for each series that is desired to be extracted.
