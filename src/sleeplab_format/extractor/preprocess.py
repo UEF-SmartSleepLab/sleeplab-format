@@ -49,7 +49,11 @@ def process_array(
 
     for action in cfg.actions:
         if action.ref_name is not None:
-            ref_func = arr_dict[action.ref_name].values_func
+            try:
+                ref_func = arr_dict[action.ref_name].values_func
+            except KeyError:
+                logger.warning(f'The signal will not be referenced since name {action.ref_name} not found in {arr_dict.keys()}')
+                ref_func = None
         else:
             ref_func = None
 
