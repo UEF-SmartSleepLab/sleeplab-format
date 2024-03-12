@@ -53,7 +53,7 @@ def process_array(
                 ref_func = arr_dict[action.ref_name].values_func
             except KeyError:
                 logger.warning(f'The signal will not be referenced since name {action.ref_name} not found in {arr_dict.keys()}')
-                ref_func = None
+                continue
         else:
             ref_func = None
 
@@ -91,16 +91,10 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
         else:
             alt_name_set = set()
 
-        if array_cfg.name in subject.sample_arrays.keys():
-            arr_name_exists = True
-        elif alt_name_set != set():
-            arr_name_exists = True
-            arr_name = alt_name_set.pop()
-            array_cfg.name = arr_name
-        else:
-            arr_name_exists = False
+        if array_cfg.name not in subject.sample_arrays.keys() and alt_name_set != set():
+            array_cfg.name = alt_name_set.pop()
 
-        if arr_name_exists:
+        if array_cfg.name in subject.sample_arrays.keys():
             _arr = process_array(subject.sample_arrays, array_cfg)
             _sample_arrays[_arr.attributes.name] = _arr
         else:

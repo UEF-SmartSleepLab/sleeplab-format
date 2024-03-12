@@ -73,15 +73,15 @@ def test_alt_names(ds_dir, tmp_path, example_extractor_config_path):
 
     cfg = config.parse_config(example_extractor_config_path)
 
-    cfg.series_configs[0].array_configs[0].name = 'doesnotexist'
-    cfg.series_configs[0].array_configs[0].alt_names = ['doesnotexist2']
+    cfg.series_configs[0].array_configs[2].name = 'doesnotexist'
+    cfg.series_configs[0].array_configs[2].alt_names = ['doesnotexist2']
     cli.extract(ds_dir, dst_dir, cfg)
     extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
     for s in extr_ds.series['series1'].subjects.values():
-        assert 's1_8hz' not in s.sample_arrays.keys()
+        assert 's2s1_32hz' not in s.sample_arrays.keys()
 
-    cfg.series_configs[0].array_configs[0].alt_names = ['doesnotexist2', 's1']
+    cfg.series_configs[0].array_configs[2].alt_names = ['doesnotexist2', 's2']
     cli.extract(ds_dir, dst_dir, cfg)
     extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
     for s in extr_ds.series['series1'].subjects.values():
-        assert 's1_8Hz' in s.sample_arrays.keys()
+        assert 's2s1_32Hz' in s.sample_arrays.keys()
