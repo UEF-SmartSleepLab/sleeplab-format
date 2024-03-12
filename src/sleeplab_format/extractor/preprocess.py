@@ -96,7 +96,7 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
         array_names = set([a.attributes.name for a in _sample_arrays.values()])
         required = set(cfg.required_result_array_names)
         if not required.issubset(array_names):
-            logger.warning(f'Skipping subject with missing sample arrays. Required: {required}, missing: {required - array_names}')
+            logger.warning(f'Skipping subject {subject.metadata.subject_id} with missing sample arrays. Required: {required}, missing: {required - array_names}')
             return None
 
     return subject.model_copy(update={'sample_arrays': _sample_arrays})
