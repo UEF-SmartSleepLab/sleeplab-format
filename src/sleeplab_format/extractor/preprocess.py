@@ -86,12 +86,19 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
                 return None
 
     for array_cfg in cfg.array_configs:
-        valid_names = set([array_cfg.name])
         if array_cfg.alt_names is not None:
-            valid_names.update(set(array_cfg.alt_names))
-        arr_name = valid_names.intersection(set(subject.sample_arrays.keys()))
-        if arr_name != set():
-            arr_name = arr_name.pop()
+            alt_name_set = set(array_cfg.alt_names).intersection(set(subject.sample_arrays.keys()))
+        else:
+            alt_name_set = set()
+
+        if array_cfg.name in subject.sample_arrays.keys():
+            arr_name = array_cfg.name
+        elif alt_name_set != set():
+            arr_name = alt_name_set.pop()
+        else:
+            arr_name = None
+
+        if arr_name is not None:
             _arr = process_array(subject.sample_arrays, array_cfg, arr_name)
             _sample_arrays[_arr.attributes.name] = _arr
         else:
