@@ -66,3 +66,22 @@ def test_required_result_array_names(ds_dir, tmp_path, example_extractor_config_
     extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
 
     assert len(extr_ds.series['series1'].subjects) == 0
+
+
+def test_alt_names(ds_dir, tmp_path, example_extractor_config_path):
+    dst_dir = tmp_path / 'extracted_datasets'
+
+    cfg = config.parse_config(example_extractor_config_path)
+
+    cfg.series_configs[0].array_configs[0].name = 'doesnotexist'
+    cfg.series_configs[0].array_configs[0].alt_names = ['doesnotexist2']
+    cli.extract(ds_dir, dst_dir, cfg)
+    extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
+    for s in extr_ds.series['series1'].subjects.values():
+        assert 's1_8hz' not in s.sample_arrays.keys()
+
+    cfg.series_configs[0].array_configs[0].alt_names = ['doesnotexist2', 's1']
+    cli.extract(ds_dir, dst_dir, cfg)
+    extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
+    for s in extr_ds.series['series1'].subjects.values():
+        assert 's1_8Hz' in s.sample_arrays.keys()

@@ -42,10 +42,11 @@ def chain_action(
 
 def process_array(
         arr_dict: dict[str, SampleArray],
-        cfg: ArrayConfig) -> SampleArray:
+        cfg: ArrayConfig,
+        arr_name: str) -> SampleArray:
     """Process a SampleArray according to the actions defined in cfg."""
     # Create a deep copy not to modify the source dataset
-    arr = arr_dict[cfg.name].model_copy(deep=True)
+    arr = arr_dict[arr_name].model_copy(deep=True)
 
     for action in cfg.actions:
         if action.ref_name is not None:
@@ -85,8 +86,13 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
                 return None
 
     for array_cfg in cfg.array_configs:
-        if array_cfg.name in subject.sample_arrays.keys():
-            _arr = process_array(subject.sample_arrays, array_cfg)
+        valid_names = set([array_cfg.name])
+        if array_cfg.alt_names is not None:
+            valid_names.update(set(array_cfg.alt_names))
+        arr_name = valid_names.intersection(set(subject.sample_arrays.keys()))
+        if arr_name != set():
+            arr_name = arr_name.pop()
+            _arr = process_array(subject.sample_arrays, array_cfg, arr_name)
             _sample_arrays[_arr.attributes.name] = _arr
         else:
             logger.warning(f'{array_cfg.name} not in sample arrays for subject {subject.metadata.subject_id}')
