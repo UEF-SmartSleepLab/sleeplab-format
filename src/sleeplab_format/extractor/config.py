@@ -32,6 +32,9 @@ class SeriesConfig(BaseModel, extra='forbid'):
     array_configs: list[ArrayConfig]
     filter_conds: list[FilterCond] | None = None
 
+    # If given, ignore subjects who do not have all of these signals in the resulting dataset
+    required_result_array_names: list[str] | None = None
+
 
 class DatasetConfig(BaseModel, extra='forbid'):
     new_dataset_name: str

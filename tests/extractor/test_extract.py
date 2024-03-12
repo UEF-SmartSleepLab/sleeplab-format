@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from sleeplab_format.extractor import config, cli
 from sleeplab_format import reader
@@ -54,3 +55,14 @@ def test_extract_zarr_load(ds_dir, tmp_path, example_extractor_config_path):
     extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
     subj = extr_ds.series['series1'].subjects['10001']
     assert type(subj.sample_arrays['s1_8Hz'].values_func()) == np.ndarray
+
+
+def test_required_result_array_names(ds_dir, tmp_path, example_extractor_config_path):
+    dst_dir = tmp_path / 'extracted_datasets'
+
+    cfg = config.parse_config(example_extractor_config_path)
+    cfg.series_configs[0].required_result_array_names = ['doesnotexist']
+    cli.extract(ds_dir, dst_dir, cfg)
+    extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
+
+    assert len(extr_ds.series['series1'].subjects) == 0
