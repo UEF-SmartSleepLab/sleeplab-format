@@ -42,11 +42,10 @@ def chain_action(
 
 def process_array(
         arr_dict: dict[str, SampleArray],
-        cfg: ArrayConfig,
-        arr_name: str) -> SampleArray:
+        cfg: ArrayConfig) -> SampleArray:
     """Process a SampleArray according to the actions defined in cfg."""
     # Create a deep copy not to modify the source dataset
-    arr = arr_dict[arr_name].model_copy(deep=True)
+    arr = arr_dict[cfg.name].model_copy(deep=True)
 
     for action in cfg.actions:
         if action.ref_name is not None:
@@ -72,9 +71,10 @@ def process_array(
 def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
     """Process all conditions and sample arrays for a single subject."""
     _sample_arrays = {}
+    _cfg = cfg.model_copy(deep=True)
 
-    if cfg.filter_conds is not None:
-        for cond in cfg.filter_conds:
+    if _cfg.filter_conds is not None:
+        for cond in _cfg.filter_conds:
             _func = import_function(cond.method)
             if cond.kwargs is None:
                 bool_keep = _func(subject)
@@ -85,21 +85,23 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
                 logger.info(f'Skipping subject {subject.metadata.subject_id} due to filter_cond {cond.name}')
                 return None
 
-    for array_cfg in cfg.array_configs:
+    for array_cfg in _cfg.array_configs:
         if array_cfg.alt_names is not None:
             alt_name_set = set(array_cfg.alt_names).intersection(set(subject.sample_arrays.keys()))
         else:
             alt_name_set = set()
 
         if array_cfg.name in subject.sample_arrays.keys():
-            arr_name = array_cfg.name
+            arr_name_exists = True
         elif alt_name_set != set():
+            arr_name_exists = True
             arr_name = alt_name_set.pop()
+            array_cfg.name = arr_name
         else:
-            arr_name = None
+            arr_name_exists = False
 
-        if arr_name is not None:
-            _arr = process_array(subject.sample_arrays, array_cfg, arr_name)
+        if arr_name_exists:
+            _arr = process_array(subject.sample_arrays, array_cfg)
             _sample_arrays[_arr.attributes.name] = _arr
         else:
             logger.warning(f'{array_cfg.name} not in sample arrays for subject {subject.metadata.subject_id}')
@@ -107,7 +109,7 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
     if cfg.required_result_array_names is not None:
         # Ignore subjects with missing required arrays
         array_names = set([a.attributes.name for a in _sample_arrays.values()])
-        required = set(cfg.required_result_array_names)
+        required = set(_cfg.required_result_array_names)
         if not required.issubset(array_names):
             logger.warning(f'Skipping subject {subject.metadata.subject_id} with missing sample arrays. Required: {required}, missing: {required - array_names}')
             return None
