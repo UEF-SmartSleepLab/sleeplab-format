@@ -53,12 +53,12 @@ series_configs:
           - name: "resample"
             method: "sleeplab_format.extractor.preprocess.resample_polyphase"
             kwargs: {"fs_new": 32}
-            updated_attributes: {"sampling_rate": 32}
+            updated_attributes: {"sampling_rate": 32, "name": "s2s1_32Hz"}
 
           - name: "subtract_reference"
             method: "sleeplab_format.extractor.preprocess.sub_ref"
             ref_name: "s1"
-            updated_attributes: {"name": "s2s1_32Hz"}
+            #updated_attributes: {"name": "s2s1_32Hz"}
     
       - name: "s1"
         

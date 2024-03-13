@@ -49,11 +49,15 @@ def process_array(
 
     for action in cfg.actions:
         if action.ref_name is not None:
+            if action.ref_name not in arr_dict.keys() and action.alt_ref_names is not None:
+                alt_name_set = set(action.alt_ref_names).intersection(set(arr_dict.keys()))
+                if alt_name_set != set():
+                    action.ref_name = alt_name_set.pop()
             try:
                 ref_func = arr_dict[action.ref_name].values_func
             except KeyError:
-                logger.warning(f'The signal will not be referenced since name {action.ref_name} not found in {arr_dict.keys()}')
-                continue
+                logger.warning(f'Discarding {cfg.name} since reference {[action.ref_name] + action.alt_ref_names} was not found in {arr_dict.keys()}')
+                return None
         else:
             ref_func = None
 
@@ -96,9 +100,10 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
 
         if array_cfg.name in subject.sample_arrays.keys():
             _arr = process_array(subject.sample_arrays, array_cfg)
-            _sample_arrays[_arr.attributes.name] = _arr
+            if _arr is not None:
+                _sample_arrays[_arr.attributes.name] = _arr
         else:
-            logger.warning(f'{array_cfg.name} not in sample arrays for subject {subject.metadata.subject_id}')
+            logger.warning(f'{[array_cfg.name] + array_cfg.alt_names} not in sample arrays for subject {subject.metadata.subject_id}')
 
     if cfg.required_result_array_names is not None:
         # Ignore subjects with missing required arrays

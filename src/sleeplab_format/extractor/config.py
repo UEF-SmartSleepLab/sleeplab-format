@@ -11,8 +11,7 @@ class ArrayAction(BaseModel, extra='forbid'):
 
     # The name of an optional reference signal
     ref_name: str | None = None
-    # TODO: Add alt_ref_names to extractor
-    # alt_ref_names: list[str] | None = None
+    alt_ref_names: list[str] | None = None
     
     kwargs: dict[str, Any] = {}
     updated_attributes: dict[str, Any] | None = None
