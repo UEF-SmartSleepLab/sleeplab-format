@@ -56,7 +56,7 @@ def process_array(
             try:
                 ref_func = arr_dict[action.ref_name].values_func
             except KeyError:
-                logger.warning(f'Discarding {cfg.name} since reference {[action.ref_name] + action.alt_ref_names} was not found in {arr_dict.keys()}')
+                logger.warning(f'Discarding {cfg.name} since reference {[action.ref_name] + (action.alt_ref_names or [])} was not found in {arr_dict.keys()}')
                 return None
         else:
             ref_func = None
@@ -103,7 +103,7 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
             if _arr is not None:
                 _sample_arrays[_arr.attributes.name] = _arr
         else:
-            logger.warning(f'{[array_cfg.name] + array_cfg.alt_names} not in sample arrays for subject {subject.metadata.subject_id}')
+            logger.warning(f'{[array_cfg.name] + (array_cfg.alt_names or [])} not in sample arrays for subject {subject.metadata.subject_id}')
 
     if cfg.required_result_array_names is not None:
         # Ignore subjects with missing required arrays
