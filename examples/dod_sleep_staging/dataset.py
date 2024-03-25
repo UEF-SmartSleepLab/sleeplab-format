@@ -29,7 +29,7 @@ component_config = {
         'fs': 64.0
     },
     'hypnogram': {
-        'src_name': 'manual_consensus_hypnogram.a.parquet',
+        'src_name': 'manual_consensus_hypnogram.a.json',
         'ctype': 'annotation',
         'sampling_interval': 30,
         'return_type': 'segmentation_combined',
