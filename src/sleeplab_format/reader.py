@@ -31,7 +31,7 @@ def read_sample_arrays(subject_dir: Path) -> dict[str, SampleArray] | None:
     for p in subject_dir.iterdir():
         if p.is_dir() and not p.name.startswith('.'):
             with open(p / 'attributes.json', 'rb') as f:
-                raw_data = f.read()
+                raw_data = f.read().decode('utf-8')
                 attributes = ArrayAttributes.model_validate_json(raw_data)
 
             if (p / 'data.npy').exists():
@@ -67,13 +67,13 @@ def read_annotations(subject_dir: Path) -> dict[str, list[Annotation]] | None:
         if p.name.endswith(JSON_ANNOTATION_SUFFIX):            
             annotation_name = p.name.removesuffix(JSON_ANNOTATION_SUFFIX)
             with open(p, 'rb') as f:
-                raw_data = f.read()
+                raw_data = f.read().decode('utf-8')
                 annotations[annotation_name] = BaseAnnotations.model_validate_json(raw_data)
         elif p.name.endswith(PARQUET_ANNOTATION_SUFFIX):
             annotation_name = p.name.removesuffix(PARQUET_ANNOTATION_SUFFIX)
             annotation_meta_path = subject_dir / f'{annotation_name}{PARQUET_ANNOTATION_META_SUFFIX}'
 
-            with open(annotation_meta_path, 'r') as f:
+            with open(annotation_meta_path, 'r', encoding='utf-8') as f:
                 ann_dict = json.load(f)
 
             ann_df = pd.read_parquet(p)
@@ -99,7 +99,7 @@ def read_subject(
         The resulting subject.
     """
     with open(subject_dir / 'metadata.json', 'rb') as f:
-        raw_data = f.read()
+        raw_data = f.read().decode('utf-8')
         metadata = SubjectMetadata.model_validate_json(raw_data)
     
     sample_arrays = read_sample_arrays(subject_dir)
@@ -151,7 +151,7 @@ def read_dataset(
     Returns:
         The resulting dataset.
     """
-    with open(ds_dir / 'metadata.json', 'r') as f:
+    with open(ds_dir / 'metadata.json', 'r', encoding='utf-8') as f:
         ds_meta = json.load(f)
 
     assert ds_meta['name'] == ds_dir.name
