@@ -39,6 +39,7 @@ def write_subject_metadata(
     metadata_path = subject_path / 'metadata.json'
     metadata_path.write_text(
         subject.metadata.model_dump_json(indent=JSON_INDENT, exclude_none=True),
+        encoding='utf-8'
     )
 
 
@@ -65,7 +66,7 @@ def write_sample_arrays(
         # Write the attributes
         attr_path = sarr_path / 'attributes.json'
         attr_path.write_text(
-            sarr.attributes.model_dump_json(indent=JSON_INDENT, exclude_none=True))
+            sarr.attributes.model_dump_json(indent=JSON_INDENT, exclude_none=True), encoding='utf-8')
 
         arr = sarr.values_func()
         if format == 'numpy':
@@ -119,7 +120,8 @@ def write_annotations(
         if format == 'json':
             json_path = subject_path / f'{k}{JSON_ANNOTATION_SUFFIX}'
             json_path.write_text(
-                v.model_dump_json(exclude_none=True, indent=JSON_INDENT)
+                v.model_dump_json(exclude_none=True, indent=JSON_INDENT),
+                encoding='utf-8'
             )
         else:
             # Write the actual annotations in parquet, metadata in json
@@ -214,7 +216,9 @@ def write_dataset(
     dataset.version = SLEEPLAB_FORMAT_VERSION
     metadata_path = dataset_path / 'metadata.json'
     metadata_path.write_text(
-        dataset.model_dump_json(exclude={'series'}, indent=JSON_INDENT))
+        dataset.model_dump_json(exclude={'series'}, indent=JSON_INDENT),
+        encoding='utf-8'
+    )
 
     # Write the series
     for name, series in dataset.series.items():

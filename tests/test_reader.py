@@ -71,6 +71,14 @@ def test_write_read_parquet(dataset: Dataset, tmp_path: Path):
     _assert_datasets_equal(dataset, ds_read)
 
 
+def test_write_read_utf8(dataset: Dataset, tmp_path: Path):
+    ds_dir = tmp_path / 'datasets'
+    dataset.series['series1'].subjects['10001'].annotations['study_logs'].annotations[0].name = '\u0394'
+    writer.write_dataset(dataset, ds_dir)
+    ds_read = reader.read_dataset(ds_dir / dataset.name)
+    _assert_datasets_equal(dataset, ds_read)
+
+
 def test_read_write(tmp_path: Path):
     tests_ds_dir = Path(__file__).parent / 'datasets'
     ds_read = reader.read_dataset(tests_ds_dir / 'dataset1')
