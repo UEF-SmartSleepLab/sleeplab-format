@@ -1,5 +1,6 @@
 """CLI for extracting and preprocessing a subset of data in sleeplab format."""
 import argparse
+import json
 import logging
 
 from pathlib import Path
@@ -23,11 +24,13 @@ def extract(src_dir: Path, dst_dir: Path, cfg: config.DatasetConfig) -> None:
     ds = reader.read_dataset(src_dir, series_names=series_names)
     
     updated_series = {}
+    series_skipped = {}
 
     for series_config in cfg.series_configs:
         logger.info(f'Creating updated series {series_config.name}')
-        _series = preprocess.process_series(ds.series[series_config.name], series_config)
+        _series, _skipped = preprocess.process_series(ds.series[series_config.name], series_config)
         updated_series[series_config.name] = _series
+        series_skipped[series_config.name] = _skipped
     
     logger.info('Creating updated Dataset')
     ds = ds.model_copy(update={'name': cfg.new_dataset_name, 'series': updated_series})
@@ -35,6 +38,12 @@ def extract(src_dir: Path, dst_dir: Path, cfg: config.DatasetConfig) -> None:
     logger.info(f'Applying preprocessing and writing dataset to {dst_dir}')
     writer.write_dataset(
         ds, dst_dir, annotation_format=cfg.annotation_format, array_format=cfg.array_format)
+
+    if series_skipped != {}:
+        skipped_path = Path(dst_dir) / ds.name / '.extractor_skipped_subjects.json'
+        logger.info(f'Writing skipped subject IDs and reasons to {skipped_path}')
+        with open(skipped_path, 'w') as f:
+            json.dump(series_skipped, f, indent=2)
 
 
 def get_parser():

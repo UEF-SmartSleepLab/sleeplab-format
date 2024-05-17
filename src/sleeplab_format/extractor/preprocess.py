@@ -86,8 +86,9 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
                 bool_keep = _func(subject, **cond.kwargs)
 
             if not bool_keep:
-                logger.info(f'Skipping subject {subject.metadata.subject_id} due to filter_cond {cond.name}')
-                return None
+                _msg = f'Skipping subject {subject.metadata.subject_id} due to filter_cond {cond.name}'
+                logger.info(_msg)
+                return None, _msg
 
     for array_cfg in _cfg.array_configs:
         if array_cfg.alt_names is not None:
@@ -110,20 +111,32 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
         array_names = set([a.attributes.name for a in _sample_arrays.values()])
         required = set(_cfg.required_result_array_names)
         if not required.issubset(array_names):
-            logger.warning(f'Skipping subject {subject.metadata.subject_id} with missing sample arrays. Required: {required}, missing: {required - array_names}')
-            return None
+            _msg = f'Skipping subject {subject.metadata.subject_id} with missing sample arrays. Required: {required}, missing: {required - array_names}'
+            logger.warning(_msg)
+            return None, _msg
 
     return subject.model_copy(update={'sample_arrays': _sample_arrays})
 
 
 def process_series(series: Series, cfg: SeriesConfig) -> Series:
+    # A handled skip is a subject for which process_subject returns None,
+    # unhandled is a subject for which process_subject throws an exception
+    skipped = {'handled': {}, 'unhandled': {}}
     updated_subjects = {}
     for sid, subj in series.subjects.items():
-        _subj = process_subject(subj, cfg)
-        if _subj is not None:
-            updated_subjects[sid] = _subj
+        try:
+            _subj = process_subject(subj, cfg)
+            match _subj:
+                case Subject():
+                    updated_subjects[sid] = _subj
+                case (None, str(msg)):
+                    skipped['handled'][sid] = msg
+                case _:
+                    skipped['unhandled'][sid] = f'process_subject(): incorrect return type {repr(_subj)}'
+        except Exception as e:
+            skipped['unhandled'][sid] = repr(e)
 
-    return series.model_copy(update={'subjects': updated_subjects})
+    return series.model_copy(update={'subjects': updated_subjects}), skipped
 
 
 def filter_by_tst(

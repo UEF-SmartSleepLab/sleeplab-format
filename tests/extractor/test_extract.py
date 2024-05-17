@@ -1,3 +1,4 @@
+import json
 import numpy as np
 import pytest
 
@@ -103,3 +104,18 @@ def test_alt_ref_names(ds_dir, tmp_path, example_extractor_config_path):
     extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
     for s in extr_ds.series['series1'].subjects.values():
         assert 's2s1_32Hz' in s.sample_arrays.keys()
+
+
+def test_filter_cond_keyerror(ds_dir, tmp_path, example_extractor_config_path):
+    dst_dir = tmp_path / 'extracted_datasets'
+    cfg = config.parse_config(example_extractor_config_path)
+
+    # Change the scorer to non-existing
+    cfg.series_configs[0].filter_conds[0].kwargs = {'min_tst_sec': 30.0, 'hypnogram_key': 'doesntexist_hypnogram'}
+    cli.extract(ds_dir, dst_dir, cfg)
+
+    with open(dst_dir / cfg.new_dataset_name / '.extractor_skipped_subjects.json', 'r') as f:
+        skipped = json.load(f)
+
+    # Assert all subjects were skipped due to incorrect hypnogram_key
+    assert len(skipped['series1']['unhandled']) == 3
