@@ -277,11 +277,9 @@ def upsample_linear(
     """Linear interpolation for upsampling signals such as SpO2."""
     fs_orig = attributes.sampling_rate
     n = len(s)
-    int_factor = fs_new // fs_orig
-    x = np.arange(0, int_factor*n, int_factor)
-    x_new = np.arange(int_factor*n - 1)
+    n_new = int(fs_new * n/fs_orig) #length of the upsampled signal (must be integer)
+    x = np.linspace(0, n-1, n)
+    x_new = np.linspace(0, n_new-1, n_new)
     s_interp = np.interp(x_new, x, s)
 
-    # Repeat the last element to match signal lengths
-    s_interp = np.append(s_interp, s_interp[-1])
     return s_interp.astype(dtype)
