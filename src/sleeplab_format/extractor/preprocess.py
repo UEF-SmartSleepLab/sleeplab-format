@@ -278,7 +278,7 @@ def upsample_linear(
     fs_orig = attributes.sampling_rate
     n = len(s)
     n_new = int(fs_new * n/fs_orig) #length of the upsampled signal (must be integer)
-    x = np.linspace(0, n-1, n)
+    x = np.linspace(0, n_new-1, n)
     x_new = np.linspace(0, n_new-1, n_new)
     s_interp = np.interp(x_new, x, s)
 
