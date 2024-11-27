@@ -7,7 +7,7 @@ from typing import Any
 
 class ArrayAction(BaseModel, extra='forbid'):
     name: str
-    method: str
+    method: str | None
 
     # The name of an optional reference signal
     ref_name: str | None = None

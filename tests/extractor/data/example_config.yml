@@ -67,3 +67,12 @@ series_configs:
             method: "sleeplab_format.extractor.preprocess.upsample_linear"
             kwargs: {"fs_new": 64}
             updated_attributes: {"sampling_rate": 128, "name": "s1_64Hz"}
+
+      - name: "s1"
+
+        # Sample arrays can be renamed by producing action with method=null
+        # and providing the new name in updated_attributes
+        actions:
+          - name: "rename_s1"
+            method: null
+            updated_attributes: {"name": "s1_renamed"}

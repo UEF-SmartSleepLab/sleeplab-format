@@ -119,3 +119,23 @@ def test_filter_cond_keyerror(ds_dir, tmp_path, example_extractor_config_path):
 
     # Assert all subjects were skipped due to incorrect hypnogram_key
     assert len(skipped['series1']['unhandled']) == 3
+
+
+def test_rename(ds_dir, tmp_path, example_extractor_config_path):
+    """Rename s1 without any other processing"""
+    dst_dir = tmp_path / 'extracted_datasets'
+    cfg = config.parse_config(example_extractor_config_path)
+
+    # There's already a rename_s1 action in the example_config.yml,
+    # so just extract and compare the results
+    cli.extract(ds_dir, dst_dir, cfg)
+
+    orig_ds = reader.read_dataset(ds_dir)
+    extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
+
+    for extr_subj in extr_ds.series['series1'].subjects.values():
+        orig_subj = orig_ds.series['series1'].subjects[extr_subj.metadata.subject_id]
+        orig_sarr = orig_subj.sample_arrays['s1']
+        extr_sarr = extr_subj.sample_arrays['s1_renamed']
+        assert orig_sarr.attributes.model_dump(exclude='name') == extr_sarr.attributes.model_dump(exclude='name')
+        assert (orig_sarr.values == extr_sarr.values).all()

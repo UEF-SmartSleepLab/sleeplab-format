@@ -61,11 +61,15 @@ def process_array(
         else:
             ref_func = None
 
-        _values_func = chain_action(
-            arr.values_func,
-            arr.attributes,
-            action,
-            ref_func)
+        if action.method is not None:
+            _values_func = chain_action(
+                arr.values_func,
+                arr.attributes,
+                action,
+                ref_func)
+        else:
+            _values_func = arr.values_func
+
         _attributes = arr.attributes.model_copy(update=action.updated_attributes)
         arr = arr.model_copy(update={'attributes': _attributes, 'values_func': _values_func})
 
