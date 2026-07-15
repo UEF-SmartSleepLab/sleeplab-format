@@ -13,6 +13,8 @@ def subject_metadata(sid):
     return {
         'subject_id': sid,
         'recording_start_ts': '2018-01-01T23:10:04',
+        'lights_off': '2018-01-01T23:10:34',
+        'lights_on': '2018-01-01T23:11:04',
         'age': 24.0,
         'bmi': 25.56,
         'sex': 'MALE'

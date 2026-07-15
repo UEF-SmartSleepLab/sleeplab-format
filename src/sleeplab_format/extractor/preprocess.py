@@ -3,6 +3,7 @@ import logging
 import numpy as np
 import scipy.signal
 
+from datetime import timedelta
 from importlib import import_module
 from sleeplab_format.extractor.config import ArrayAction, ArrayConfig, SeriesConfig
 from sleeplab_format.models import ArrayAttributes, SampleArray, Series, AASMSleepStage, Subject
@@ -81,6 +82,12 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
     _sample_arrays = {}
     _cfg = cfg.model_copy(deep=True)
 
+    if _cfg.crop_lights_off_on:
+        assert subject.metadata.lights_off is not None, f'Subject {subject.metadata.subject_id} lights_off is None, cannot crop'
+        assert subject.metadata.lights_on is not None, f'Subject {subject.metadata.subject_id} lights_on is None, cannot crop'
+        # Modify all sample arrays and annotations inplace
+        crop_lights_off_on(subject)
+
     if _cfg.filter_conds is not None:
         for cond in _cfg.filter_conds:
             _func = import_function(cond.method)
@@ -110,7 +117,7 @@ def process_subject(subject: Subject, cfg: SeriesConfig) -> Subject | None:
         else:
             logger.warning(f'{[array_cfg.name] + (array_cfg.alt_names or [])} not in sample arrays for subject {subject.metadata.subject_id}')
 
-    if cfg.required_result_array_names is not None:
+    if _cfg.required_result_array_names is not None:
         # Ignore subjects with missing required arrays
         array_names = set([a.attributes.name for a in _sample_arrays.values()])
         required = set(_cfg.required_result_array_names)
@@ -138,6 +145,7 @@ def process_series(series: Series, cfg: SeriesConfig) -> Series:
                 case _:
                     skipped['unhandled'][sid] = f'process_subject(): incorrect return type {repr(_subj)}'
         except Exception as e:
+            logger.info(f'Unhandled exception {e}')
             skipped['unhandled'][sid] = repr(e)
 
     return series.model_copy(update={'subjects': updated_subjects}), skipped
@@ -287,3 +295,47 @@ def upsample_linear(
     s_interp = np.interp(x_new, x, s)
 
     return s_interp.astype(dtype)
+
+
+def crop_signal_closure(
+        values_func: Callable,
+        start_idx: int,
+        end_idx: int) -> Callable:
+    def inner():
+        return values_func()[start_idx:end_idx]
+
+    return inner
+
+
+def crop_lights_off_on(subject: Subject) -> None:
+    """Crop all signals and annotations to subject.metadata.lights_off -> on.
+
+    The cropping is performed in-place.
+    """
+    _lights_off = subject.metadata.lights_off
+    _lights_on = subject.metadata.lights_on
+
+    for _, arr in subject.sample_arrays.items():
+        _start_ts = arr.attributes.start_ts
+        _fs = arr.attributes.sampling_rate
+        _start_sec = (_lights_off - _start_ts).total_seconds()
+        _start_idx = _fs * _start_sec
+        _end_idx = _fs * (_lights_on - _start_ts).total_seconds()
+
+        _values_func = crop_signal_closure(arr.values_func, int(_start_idx), int(_end_idx))
+        arr.values_func = _values_func
+
+        arr.attributes.start_ts = _lights_off
+
+    _recording_start_ts = subject.metadata.recording_start_ts
+    _ann_start_sec_offset = (_lights_off - _recording_start_ts).total_seconds()
+
+    for _, ann in subject.annotations.items():
+        ann.annotations = [a.model_copy(update={'start_sec': a.start_sec - _ann_start_sec_offset})
+            for a in ann.annotations
+            if a.start_ts >= _lights_off and a.start_ts + timedelta(seconds=a.duration) <= _lights_on
+        ]
+
+    subject.metadata.recording_start_ts = _lights_off
+
+    return None

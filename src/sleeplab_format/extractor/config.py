@@ -34,6 +34,9 @@ class SeriesConfig(BaseModel, extra='forbid'):
     array_configs: list[ArrayConfig]
     filter_conds: list[FilterCond] | None = None
 
+    # If true, crop the resulting dataset to subject.metadata.lights_off/on
+    crop_lights_off_on: bool = False
+
     # If given, ignore subjects who do not have all of these signals in the resulting dataset
     required_result_array_names: list[str] | None = None
 
