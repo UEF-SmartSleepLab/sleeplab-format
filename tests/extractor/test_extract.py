@@ -161,3 +161,14 @@ def test_crop_lights_off_on(ds_dir, tmp_path, example_extractor_config_path):
         for sarr in subj.sample_arrays.values():
             assert sarr.attributes.start_ts == subj.metadata.lights_off
             assert len(sarr.values) == 30 * sarr.attributes.sampling_rate
+
+
+def test_ignore_subject_ids(ds_dir, tmp_path, example_extractor_config_path):
+    dst_dir = tmp_path / 'extracted_datasets'
+    cfg = config.parse_config(example_extractor_config_path)
+
+    cfg.series_configs[0].ignore_subject_ids = ['10002', '10001']
+
+    cli.extract(ds_dir, dst_dir, cfg)
+    extr_ds = reader.read_dataset(dst_dir / 'dataset1_extracted')
+    assert len(extr_ds.series['series1'].subjects.values()) == 1

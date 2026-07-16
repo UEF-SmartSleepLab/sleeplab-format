@@ -135,6 +135,11 @@ def process_series(series: Series, cfg: SeriesConfig) -> Series:
     skipped = {'handled': {}, 'unhandled': {}}
     updated_subjects = {}
     for sid, subj in series.subjects.items():
+        if cfg.ignore_subject_ids is not None:
+            if sid in cfg.ignore_subject_ids:
+                logger.info(f'Skipping subject {sid} on ignore_subject_ids...')
+                skipped['handled'][sid] = 'ignore_subject_ids'
+                continue
         try:
             _subj = process_subject(subj, cfg)
             match _subj:
