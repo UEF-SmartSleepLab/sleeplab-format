@@ -84,7 +84,7 @@ def write_sample_arrays(
             #zarr.save_array(sarr_path / arr_fname, arr, filters=[shuffler, delta], compressor=compressor)
             if zarr_chunksize is not None:
                 # Chunk size from bytes to samples
-                chunks = (zarr_chunksize // arr.dtype.itemsize,)
+                chunks = (int(zarr_chunksize // arr.dtype.itemsize),)
                 z = zarr.array(arr, chunks=chunks)
 
             #compressor = numcodecs.Blosc(cname='zstd', clevel=zarr_compression_level, shuffle=numcodecs.Blosc.NOSHUFFLE)

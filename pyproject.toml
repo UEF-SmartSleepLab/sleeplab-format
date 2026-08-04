@@ -19,7 +19,7 @@ dependencies = [
     "pyyaml",
     "pydantic>=2.0",
     "scipy",
-    "zarr"
+    "zarr>=2,<3"  # TODO: migrate to v3
 ]
 
 [project.scripts]
